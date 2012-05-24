@@ -15,7 +15,7 @@ public abstract class Message {
     public Agent receivingAgent;
     public Agent sendingAgent;
     
-    Priority messagePriority = Priority.MEDIUM;
+    protected Priority messagePriority = Priority.MEDIUM;
     
     public Message(Agent rAgent, Agent sAgent)
     {

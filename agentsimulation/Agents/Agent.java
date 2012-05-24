@@ -53,6 +53,11 @@ public abstract class Agent {
         Dispatcher.SendMessage(message);
     }
     
+    public final State GetState()
+    {
+        return state;
+    }
+    
     public final int getID()
     {
         return agentID;
@@ -80,7 +85,7 @@ public abstract class Agent {
         }
     }
     
-    public void Move(Point next)
+    public final void Move(Point next)
     {
         Patch currentPatch = World.patchMap.get(position);
         Patch nextPatch = World.patchMap.get(next);
@@ -92,7 +97,7 @@ public abstract class Agent {
         Dispatcher.SendMessage(leavePatch);
     }
     
-    public void Move(Patch nextPatch)
+    public final void Move(Patch nextPatch)
     {
         Patch currentPatch = World.patchMap.get(position);
         position = nextPatch.GetPosition();
