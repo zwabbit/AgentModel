@@ -22,7 +22,7 @@ public class Ant extends Agent{
 		else{
 			//if no, check current patch for food (ignoring food in drop zone)
 			Patch currLoc = World.patchMap.get(position);
-			//if(currLoc.getFood() > 0){
+			//if(currLoc.Eat > 0){
 				
 			//}
 				//if yes, pick up food and end turn
