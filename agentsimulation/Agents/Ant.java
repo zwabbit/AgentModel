@@ -26,10 +26,11 @@ public class Ant extends Agent{
 		else{
 			//if no, check current patch for food (ignoring food in drop zone)
 			Patch currLoc = World.patchMap.get(position);
-			//if(currLoc.Eat > 0){
-				
-			//}
-			//else{
+			int tempFood = currLoc.Eat(10);
+			if (tempFood > 0){
+				foodCarrying = tempFood; 
+			}
+			else{
 				int xDir = moveRand.nextInt(3) - 1;
 				int yDir = moveRand.nextInt(3) - 1;
 				boolean moveSuccess = Move(new Point(position.x + xDir, position.y + yDir));
@@ -38,7 +39,7 @@ public class Ant extends Agent{
 					yDir = moveRand.nextInt(3) - 1;
 					moveSuccess =  Move(new Point(position.x + xDir, position.y + yDir));
 				}
-			//}
+			}
 				//if yes, pick up food and end turn
 				//if no, check for food in vision radius
 					//if yes, move toward food
