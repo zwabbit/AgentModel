@@ -71,7 +71,7 @@ public abstract class Agent {
             Execute();
             return;
         }
-        if(state == State.ALIVE)
+        if(state == State.ALIVE && this.getClass() != Patch.class)
         {
             Dispatcher.agentList.add(this);
             Execute();
