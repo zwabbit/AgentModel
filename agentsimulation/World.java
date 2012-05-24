@@ -8,7 +8,6 @@ import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
 import java.awt.Point;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,7 +16,7 @@ import java.util.Random;
  */
 public class World {
     public static HashMap<Point, Patch> patchMap;
-    public static List<Ant> antList;
+    public static HashMap<Integer, Ant> antList;
     protected int xDim;
     protected int yDim;
     
@@ -38,7 +37,9 @@ public class World {
     	Random antRandom = new Random();
     	for(int i = 0;i<num;i++){
     		Ant newAnt = new Ant(antRandom.nextInt(xDim), antRandom.nextInt(yDim));
-    		antList.add(newAnt);
+    		antList.put(newAnt.getID(),newAnt);
     	}
+        
+        Dispatcher.agentList.addAll(antList.values());
     }
 }

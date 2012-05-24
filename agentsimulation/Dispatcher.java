@@ -8,9 +8,7 @@ import agentsimulation.Agents.Agent;
 import agentsimulation.Agents.Patch;
 import agentsimulation.Messages.Message;
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -45,8 +43,12 @@ public class Dispatcher implements Runnable {
         while (true) {
             agentMessages = new HashMap<>();
 
-            currentMessageList = messageList;
-            messageList = new LinkedBlockingQueue<>();
+            currentMessageList.clear();
+            currentMessageList.addAll(messageList);
+            messageList.clear();
+            
+            LinkedBlockingQueue<Agent> currentAgents = new LinkedBlockingQueue<>(agentList);
+            agentList.clear();
 
             /*
              * All this splitting of work could be done much more efficiently
@@ -72,7 +74,7 @@ public class Dispatcher implements Runnable {
                 taskExecutor = Executors.newFixedThreadPool(cpuCount);
                 for(int index = 0; index < cpuCount; index++)
                 {
-                    taskExecutor.execute(new ExecutionThread(agentList, messages));
+                    taskExecutor.execute(new ExecutionThread(currentAgents, messages));
                 }
 
                 taskExecutor.shutdown();
