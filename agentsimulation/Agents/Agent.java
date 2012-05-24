@@ -5,6 +5,7 @@
 package agentsimulation.Agents;
 
 import agentsimulation.Dispatcher;
+import agentsimulation.Messages.Die;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
@@ -81,24 +82,38 @@ public abstract class Agent {
     {
         if(state == State.ALIVE)
         {
+            if(message instanceof Die)
+            {
+                state = State.DEAD;
+                Patch p = World.patchMap.get(position);
+                LeavePatch leave = new LeavePatch(p, this);
+                SendMessage(leave);
+                return;
+            }
             ExecuteMessage(message);
         }
     }
     
-    public final void Move(Point next)
+    public final boolean Move(Point next)
     {
         Patch currentPatch = World.patchMap.get(position);
         Patch nextPatch = World.patchMap.get(next);
+        if(nextPatch == null)
+            return false;
         position = next;
         EnterPatch enterPatch = new EnterPatch(nextPatch, this);
         LeavePatch leavePatch = new LeavePatch(currentPatch, this);
         
         Dispatcher.SendMessage(enterPatch);
         Dispatcher.SendMessage(leavePatch);
+        
+        return true;
     }
     
-    public final void Move(Patch nextPatch)
+    public final boolean Move(Patch nextPatch)
     {
+        if(nextPatch == null)
+            return false;
         Patch currentPatch = World.patchMap.get(position);
         position = nextPatch.GetPosition();
         EnterPatch enterPatch = new EnterPatch(nextPatch, this);
@@ -106,5 +121,7 @@ public abstract class Agent {
         
         Dispatcher.SendMessage(enterPatch);
         Dispatcher.SendMessage(leavePatch);
+        
+        return true;
     }
 }
