@@ -21,6 +21,7 @@ public class Patch extends Agent {
     AtomicInteger food;
     
     public static int MAX_FOOD = 50;
+    public static int MAX_GROW = 5;
     private static Random patchRandom =  null;
     
     public Patch(int x, int y)
@@ -33,7 +34,7 @@ public class Patch extends Agent {
     
     @Override
     protected void Execute() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        food.addAndGet(MAX_GROW);
     }
 
     @Override
