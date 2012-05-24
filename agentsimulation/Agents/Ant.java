@@ -1,11 +1,15 @@
 package agentsimulation.Agents;
 
+import java.awt.Point;
+import java.util.Random;
+
 import agentsimulation.World;
 import agentsimulation.Messages.Message;
 
 public class Ant extends Agent{
 
 	protected int foodCarrying;
+	private Random moveRand = new Random();
 	
 	public Ant (int x, int y){
 		super(x, y);
@@ -24,6 +28,16 @@ public class Ant extends Agent{
 			Patch currLoc = World.patchMap.get(position);
 			//if(currLoc.Eat > 0){
 				
+			//}
+			//else{
+				int xDir = moveRand.nextInt(3) - 1;
+				int yDir = moveRand.nextInt(3) - 1;
+				boolean moveSuccess = Move(new Point(position.x + xDir, position.y + yDir));
+				while(!moveSuccess){
+					xDir = moveRand.nextInt(3) - 1;
+					yDir = moveRand.nextInt(3) - 1;
+					moveSuccess =  Move(new Point(position.x + xDir, position.y + yDir));
+				}
 			//}
 				//if yes, pick up food and end turn
 				//if no, check for food in vision radius
