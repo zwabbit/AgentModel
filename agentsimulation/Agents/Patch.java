@@ -79,4 +79,9 @@ public class Patch extends Agent {
         
         return list;
     }
+    
+    public int GetFood()
+    {
+        return food.intValue();
+    }
 }
