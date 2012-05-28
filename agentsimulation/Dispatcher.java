@@ -60,7 +60,7 @@ public class Dispatcher implements Runnable {
              * agent queues are empty, decrement the latch and we'll wake up
              * again in this thread.
              */
-            while (!currentMessageList.isEmpty()) {
+            do {
                 for (Message message : currentMessageList) {
                     LinkedBlockingQueue<Message> mQueue = agentMessages.get(message.receivingAgent.getID());
                     if (mQueue == null) {
@@ -71,7 +71,7 @@ public class Dispatcher implements Runnable {
                 }
 
                 currentMessageList.clear();
-            }
+            
                 LinkedBlockingQueue<LinkedBlockingQueue<Message>> messages = new LinkedBlockingQueue<>(agentMessages.values());
 
                 taskExecutor = Executors.newFixedThreadPool(cpuCount);
@@ -82,7 +82,7 @@ public class Dispatcher implements Runnable {
 
                 taskExecutor.shutdown();
                 while (!taskExecutor.isTerminated()) {}
-            
+            }while (!currentMessageList.isEmpty());
 
             taskExecutor = Executors.newFixedThreadPool(cpuCount);
             LinkedBlockingQueue<Patch> patchList = new LinkedBlockingQueue<>(patches.values());
