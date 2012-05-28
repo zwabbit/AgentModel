@@ -46,6 +46,8 @@ public class WolfSpider extends Agent {
             
             this.Move(new Point(nextX,nextY));
             
+            stalking = false;
+            
             return;
         }
         Patch p = World.patchMap.get(position);
