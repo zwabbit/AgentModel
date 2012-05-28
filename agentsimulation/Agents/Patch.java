@@ -41,7 +41,7 @@ public class Patch extends Agent {
     
     @Override
     protected void Execute() {
-       // food.addAndGet(MAX_GROW);
+        if(patchRandom.nextInt(30) == 0) food.addAndGet(patchRandom.nextInt(MAX_GROW));
         updateGUI();
     }
 
