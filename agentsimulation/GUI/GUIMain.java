@@ -53,7 +53,7 @@ public class GUIMain {
 		
 		if (c == Patch.class){
 			if(curr == States.NULL){
-				System.out.println("updat p");
+				//System.out.println("updat p");
 				if((int)vars.get("food") > 0){
 					
 					BoardState.setState(loc.x, loc.y, States.FOOD);
@@ -64,7 +64,7 @@ public class GUIMain {
 			}
 		}
 		else if (c == Ant.class) {
-			System.out.println(vars);
+			//System.out.println(vars);
 			BoardState.setState(loc.x, loc.y, States.ANT);
 		}
 		else{

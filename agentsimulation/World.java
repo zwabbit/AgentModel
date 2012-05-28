@@ -51,9 +51,9 @@ public class World {
     	for(int i = 0;i<num;i++){
     		Ant newAnt = new Ant(antRandom.nextInt(xDim), antRandom.nextInt(yDim));
     		antList.put(newAnt.getID(),newAnt);
-    		//System.out.println(newAnt.getID() + " " + newAnt);
+    		System.out.println(newAnt.getID() + " " + newAnt);
     	}
-        System.out.println(num + " ants at " + antList.get(0).GetPosition());
+ //       System.out.println(num + " ants at " + antList.get(0).GetPosition());
         Dispatcher.agentList.addAll(antList.values());
     }
 }

@@ -42,7 +42,7 @@ public abstract class Agent {
     
     protected Agent(int x, int y)
     {
-        super();
+        this();
         position = new Point(x, y);
     }
     
