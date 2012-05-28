@@ -17,6 +17,10 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class WolfSpider extends Agent {
 
+    public WolfSpider(int x, int y)
+    {
+        super(x,y);
+    }
     int hunger = 10;
     boolean stalking = false;
     @Override

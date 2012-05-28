@@ -6,6 +6,7 @@ package agentsimulation;
 
 import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
+import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.States;
 
@@ -55,5 +56,28 @@ public class World {
     	}
  //       System.out.println(num + " ants at " + antList.get(0).GetPosition());
         Dispatcher.agentList.addAll(antList.values());
+    }
+    
+    public void initializeWolfSpiders(int num)
+    {
+        Random sRandom = new Random();
+        for(int index = 0; index < num; index++)
+        {
+            WolfSpider spider = new WolfSpider(sRandom.nextInt(xDim), sRandom.nextInt(yDim));
+        }
+    }
+    
+    public void initializeAgent(Class agentClass, int num)
+    {
+        if(agentClass == Ant.class)
+        {
+            initializeAnts(num);
+            return;
+        }
+        
+        if(agentClass == WolfSpider.class)
+        {
+            return;
+        }
     }
 }
