@@ -5,6 +5,7 @@
 package agentsimulation.Agents;
 
 import agentsimulation.Dispatcher;
+import agentsimulation.GUI.GUIMain;
 import agentsimulation.Messages.Die;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
@@ -23,6 +24,7 @@ public abstract class Agent {
     protected State state = State.ALIVE;
     protected abstract void Execute();
     protected abstract void ExecuteMessage(Message message);
+    protected abstract void updateGUI();
     
     protected Point position;
     
@@ -66,13 +68,17 @@ public abstract class Agent {
     
     public final void SetNext()
     {
+    	if(this.getClass() != Patch.class){
+
+    	}
         if(this instanceof Patch)
         {
             Execute();
             return;
         }
-        if(state == State.ALIVE && this.getClass() != Patch.class)
+        if(state.equals(State.ALIVE) && this.getClass() != Patch.class)
         {
+
             Dispatcher.agentList.add(this);
             Execute();
         }
@@ -96,7 +102,7 @@ public abstract class Agent {
     
     public final boolean Move(Point next)
     {
-        Patch currentPatch = World.patchMap.get(position);
+    	Patch currentPatch = World.patchMap.get(position);
         Patch nextPatch = World.patchMap.get(next);
         if(nextPatch == null)
             return false;
@@ -124,4 +130,5 @@ public abstract class Agent {
         
         return true;
     }
+    
 }

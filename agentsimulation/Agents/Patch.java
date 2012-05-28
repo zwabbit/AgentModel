@@ -4,9 +4,12 @@
  */
 package agentsimulation.Agents;
 
+import agentsimulation.GUI.GUIMain;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
+import agentsimulation.Messages.UpdateGUI;
+
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -29,12 +32,15 @@ public class Patch extends Agent {
         super(x,y);
         if(patchRandom == null)
             patchRandom = new Random();
+        if(presentAgents == null) presentAgents = new HashMap<Class, HashMap<Integer, Agent>>();
         food = new AtomicInteger(patchRandom.nextInt(MAX_FOOD));
+        
     }
     
     @Override
     protected void Execute() {
-        food.addAndGet(MAX_GROW);
+        //food.addAndGet(MAX_GROW);
+        updateGUI();
     }
 
     @Override
@@ -66,6 +72,10 @@ public class Patch extends Agent {
                 }
             }
         }
+        if(message instanceof UpdateGUI){
+        	updateGUI();
+        }
+        updateGUI();
     }
     
     public int Eat(int amount)
@@ -84,4 +94,13 @@ public class Patch extends Agent {
     {
         return food.intValue();
     }
+
+	@Override
+	protected void updateGUI() {
+		HashMap<String, Object> vars = new HashMap<String, Object>();
+		vars.put("food", GetFood());
+		vars.put("location", GetPosition());
+		vars.put("id", getID());
+		GUIMain.updateBoardState(this.getClass(), vars);
+	}
 }

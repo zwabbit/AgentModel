@@ -1,10 +1,15 @@
 package agentsimulation.Agents;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Random;
 
 import agentsimulation.World;
+import agentsimulation.GUI.BoardState;
+import agentsimulation.GUI.GUIMain;
+import agentsimulation.GUI.States;
 import agentsimulation.Messages.Message;
+import agentsimulation.Messages.UpdateGUI;
 
 public class Ant extends Agent{
 
@@ -13,12 +18,16 @@ public class Ant extends Agent{
 	
 	public Ant (int x, int y){
 		super(x, y);
+		BoardState.setState(x, y, States.ANT);
 	}
 	@Override
 	protected void Execute() {
 		// TODO Auto-generated method stub
 		//check if has food
+		//System.out.println("ant execution started");
 		if (foodCarrying > 0){
+			foodCarrying = 0;
+			//System.out.println("carrying food");
 			//if yes, check if in drop zone
 				//if yes, drop food, end turn
 				//if no, move toward drop zone
@@ -26,8 +35,9 @@ public class Ant extends Agent{
 		else{
 			//if no, check current patch for food (ignoring food in drop zone)
 			Patch currLoc = World.patchMap.get(position);
-			int tempFood = currLoc.Eat(10);
+			int tempFood = currLoc.Eat(50);
 			if (tempFood > 0){
+				//System.out.println("got food");
 				foodCarrying = tempFood; 
 			}
 			else{
@@ -47,14 +57,24 @@ public class Ant extends Agent{
 						//if yes, do pheromone action
 						//if no, move to a random (empty?) patch
 		}
-			
+		updateGUI();	
 			
 	}
 
 	@Override
 	protected void ExecuteMessage(Message message) {
 		// TODO Auto-generated method stub
-		
+		if(message instanceof UpdateGUI){
+			updateGUI();
+		}
+	}
+	
+	protected void updateGUI(){
+		HashMap<String, Object> vars = new HashMap<String, Object>();
+		vars.put("food", foodCarrying);
+		vars.put("location", GetPosition());
+		vars.put("id", getID());
+		GUIMain.updateBoardState(this.getClass(), vars);
 	}
 
 }

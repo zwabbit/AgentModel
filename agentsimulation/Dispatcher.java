@@ -6,6 +6,7 @@ package agentsimulation;
 
 import agentsimulation.Agents.Agent;
 import agentsimulation.Agents.Patch;
+import agentsimulation.GUI.GUIMain;
 import agentsimulation.Messages.Message;
 import java.awt.Point;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class Dispatcher implements Runnable {
         cpuCount = Runtime.getRuntime().availableProcessors();
         if(agentList == null) agentList = new LinkedBlockingQueue<>();
         if(messageList == null) messageList = new LinkedBlockingQueue<>();
+        if(currentMessageList == null) currentMessageList = new LinkedBlockingQueue<>();
         
         this.patches = patchMap;
     }
@@ -41,14 +43,15 @@ public class Dispatcher implements Runnable {
     public void run() {
         HashMap<Integer, LinkedBlockingQueue<Message>> agentMessages;
         while (true) {
+        	
             agentMessages = new HashMap<>();
-
             currentMessageList.clear();
             currentMessageList.addAll(messageList);
             messageList.clear();
             
             LinkedBlockingQueue<Agent> currentAgents = new LinkedBlockingQueue<>(agentList);
             agentList.clear();
+            
 
             /*
              * All this splitting of work could be done much more efficiently
@@ -68,7 +71,7 @@ public class Dispatcher implements Runnable {
                 }
 
                 currentMessageList.clear();
-                
+            }
                 LinkedBlockingQueue<LinkedBlockingQueue<Message>> messages = new LinkedBlockingQueue<>(agentMessages.values());
 
                 taskExecutor = Executors.newFixedThreadPool(cpuCount);
@@ -79,7 +82,7 @@ public class Dispatcher implements Runnable {
 
                 taskExecutor.shutdown();
                 while (!taskExecutor.isTerminated()) {}
-            }
+            
 
             taskExecutor = Executors.newFixedThreadPool(cpuCount);
             LinkedBlockingQueue<Patch> patchList = new LinkedBlockingQueue<>(patches.values());
@@ -89,6 +92,7 @@ public class Dispatcher implements Runnable {
 
             taskExecutor.shutdown();
             while (!taskExecutor.isTerminated()) {}
+            GUIMain.drawNext();
         }
     }
     

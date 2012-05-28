@@ -36,6 +36,7 @@ public class ExecutionThread implements Runnable {
         
         while(true)
         {
+        	
             Agent agent = agentQueue.poll();
             if(agent == null)
                 break;
