@@ -32,7 +32,10 @@ public class WolfSpider extends Agent {
     protected void Execute() {
         Patch p = World.patchMap.get(position);
         LinkedBlockingQueue<Agent> ants = p.GetAgents(Ant.class);
-        Ant ant = (Ant)ants.poll();
+        Ant ant = null;
+        if(ants != null){
+        	ant = (Ant)ants.poll();
+        }
         if(ant != null)
         {
             Die die = new Die(ant, this);
@@ -73,37 +76,9 @@ public class WolfSpider extends Agent {
             this.Move(new Point(nextX,nextY));
             
             stalking = false;
-<<<<<<< HEAD
+
             
             return;
-        }
-        Patch p = World.patchMap.get(position);
-        LinkedBlockingQueue<Agent> ants = p.GetAgents(Ant.class);
-        Ant ant;
-        if (ants == null){
-        	ant = null;
-        }
-        else{
-        	ant = (Ant)ants.poll();
-        }
-        if(ant != null)
-        {
-            Die die = new Die(ant, this);
-            this.SendMessage(die);
-            hunger = 10;
-        }
-        else
-        {
-            if(hunger == 0)
-            {
-                stalking = true;
-            }
-            else
-            {
-                --hunger;
-            }
-=======
->>>>>>> 1a24023c863aedf583b2809447579944b17e6a7f
         }
     }
 
