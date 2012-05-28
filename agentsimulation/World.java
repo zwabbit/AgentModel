@@ -21,8 +21,8 @@ public class World {
     public static HashMap<Point, Patch> patchMap;
     public static HashMap<Integer, Ant> antList;
     public static boolean started = false;
-    protected int xDim;
-    protected int yDim;
+    public static int xDim;
+    public static int yDim;
     
     public World(int x, int y)
     {
