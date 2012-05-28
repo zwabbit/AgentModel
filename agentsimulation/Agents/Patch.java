@@ -4,7 +4,9 @@
  */
 package agentsimulation.Agents;
 
+import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.GUIMain;
+import agentsimulation.GUI.States;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
@@ -39,7 +41,7 @@ public class Patch extends Agent {
     
     @Override
     protected void Execute() {
-        //food.addAndGet(MAX_GROW);
+       // food.addAndGet(MAX_GROW);
         updateGUI();
     }
 
@@ -73,8 +75,9 @@ public class Patch extends Agent {
             }
         }
         if(message instanceof UpdateGUI){
-        	updateGUI();
+
         }
+        
         updateGUI();
     }
     
@@ -85,8 +88,10 @@ public class Patch extends Agent {
     
     public LinkedBlockingQueue<Agent> GetAgents(Class agentClass)
     {
-        LinkedBlockingQueue<Agent> list = (LinkedBlockingQueue<Agent>)presentAgents.get(agentClass).clone();
-        
+    	LinkedBlockingQueue<Agent> list = null;
+    	if(presentAgents.get(agentClass) != null){
+    		list = new LinkedBlockingQueue<Agent>(presentAgents.get(agentClass).values());
+        }       
         return list;
     }
     
@@ -95,12 +100,21 @@ public class Patch extends Agent {
         return food.intValue();
     }
 
-	@Override
 	protected void updateGUI() {
-		HashMap<String, Object> vars = new HashMap<String, Object>();
-		vars.put("food", GetFood());
-		vars.put("location", GetPosition());
-		vars.put("id", getID());
-		GUIMain.updateBoardState(this.getClass(), vars);
+		States set = States.NULL;
+		if(presentAgents.get(WolfSpider.class) != null){
+			set = States.SPIDER;
+		}
+		else if (presentAgents.get(Ant.class) != null){
+			set = States.ANT;
+		}
+		else if (GetFood() > 0){
+			set = States.FOOD;
+		}
+		else {
+			set = States.EMPTY;
+		}
+		BoardState.setState(GetPosition().x, GetPosition().y, set);
+		//GUIMain.updateBoardState(this.getClass(), vars);
 	}
 }

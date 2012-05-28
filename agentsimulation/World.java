@@ -52,7 +52,6 @@ public class World {
     	for(int i = 0;i<num;i++){
     		Ant newAnt = new Ant(antRandom.nextInt(xDim), antRandom.nextInt(yDim));
     		antList.put(newAnt.getID(),newAnt);
-    		System.out.println(newAnt.getID() + " " + newAnt);
     	}
  //       System.out.println(num + " ants at " + antList.get(0).GetPosition());
         Dispatcher.agentList.addAll(antList.values());
@@ -64,6 +63,7 @@ public class World {
         for(int index = 0; index < num; index++)
         {
             WolfSpider spider = new WolfSpider(sRandom.nextInt(xDim), sRandom.nextInt(yDim));
+            Dispatcher.agentList.add(spider);
         }
     }
     

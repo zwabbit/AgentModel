@@ -19,16 +19,23 @@ public class GUIMain {
 	public static GUIControls controls;
 	private static int xDim;
 	private static int yDim;
-	private static HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>> variablesMap;
+	//private static HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>> variablesMap;
+	private static HashMap<Class<? extends Agent>, Integer> agentsMap;
+	private static GUIPatchInfo patchInfo;
+	//private static HashMap<Class <? extends Agent>,   
 	
 	public GUIMain(int x, int y){
 		background = new GUIBackground(x, y);
 		controls = new GUIControls();
-		variablesMap = new HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>>();
+		patchInfo = new GUIPatchInfo();
+		//variablesMap = new HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>>();
+		agentsMap = new HashMap<Class<? extends Agent>, Integer>();
+		
 		xDim = x;
 		yDim = y;
 		System.out.flush();	
-	
+		
+		drawNext();
 		background.pack();
 		background.setResizable(true);
 		background.setLocationRelativeTo(null);
@@ -42,6 +49,11 @@ public class GUIMain {
 		controls.setResizable(true);
 		controls.setLocationRelativeTo(null);
 		controls.setVisible(true);
+		
+		patchInfo.pack();
+		patchInfo.setResizable(true);
+		patchInfo.setLocationRelativeTo(null);
+		patchInfo.setVisible(true);
 	}
 	
 	public static void updateBoardState(Class<? extends Agent> c, HashMap<String, Object> vars){
@@ -52,7 +64,7 @@ public class GUIMain {
 		
 		
 		if (c == Patch.class){
-			if(curr == States.NULL){
+			//if(curr == States.NULL){
 				//System.out.println("updat p");
 				if((int)vars.get("food") > 0){
 					
@@ -61,7 +73,7 @@ public class GUIMain {
 				else{
 					BoardState.setState(loc.x, loc.y, States.EMPTY);
 				}
-			}
+			//}
 		}
 		else if (c == Ant.class) {
 			//System.out.println(vars);
@@ -71,10 +83,10 @@ public class GUIMain {
 			BoardState.setState(loc.x, loc.y, States.OTHER);
 		}
 		
-		if(variablesMap.get(c) == null){
-			variablesMap.put(c, new HashMap<Integer, HashMap<String, Object>>());
-		}
-		variablesMap.get(c).put(id, vars);
+		//if(variablesMap.get(c) == null){
+		//	variablesMap.put(c, new HashMap<Integer, HashMap<String, Object>>());
+		//}
+		//variablesMap.get(c).put(id, vars);
 		
 	}
 	
@@ -88,6 +100,10 @@ public class GUIMain {
 				switch(BoardState.getState(j, i)){
 					case FOOD:
 						square.setBackground(Color.GREEN);
+					break;
+					
+					case SPIDER:
+						square.setBackground(Color.YELLOW);
 					break;
 					
 					case ANT:
@@ -114,7 +130,7 @@ public class GUIMain {
 			}
 			//System.out.println();
 		}
-		clearAgents();
+		//clearAgents();
 		//System.out.println();
 	}
 	
@@ -126,5 +142,10 @@ public class GUIMain {
 				}
 			}
 		}
+	}
+
+	public static void updateInfoPanel(JPanel source) {
+		// TODO Auto-generated method stub
+		System.out.println(source.getLocation());
 	}
 }

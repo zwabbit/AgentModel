@@ -93,6 +93,7 @@ public class GUIBackground extends JFrame implements MouseListener, MouseMotionL
 	private static void clicked(Object source) {
 		// TODO Auto-generated method stub
 		((JPanel)source).setBackground(Color.getHSBColor((float) 0.5, (float)0.4, 2));
+		GUIMain.updateInfoPanel((JPanel)source);
 		return;
 	}
 	

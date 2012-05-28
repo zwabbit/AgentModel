@@ -57,7 +57,7 @@ public class Ant extends Agent{
 						//if yes, do pheromone action
 						//if no, move to a random (empty?) patch
 		}
-		updateGUI();	
+		
 			
 	}
 
@@ -65,16 +65,9 @@ public class Ant extends Agent{
 	protected void ExecuteMessage(Message message) {
 		// TODO Auto-generated method stub
 		if(message instanceof UpdateGUI){
-			updateGUI();
+	
 		}
 	}
 	
-	protected void updateGUI(){
-		HashMap<String, Object> vars = new HashMap<String, Object>();
-		vars.put("food", foodCarrying);
-		vars.put("location", GetPosition());
-		vars.put("id", getID());
-		GUIMain.updateBoardState(this.getClass(), vars);
-	}
 
 }

@@ -24,7 +24,7 @@ public abstract class Agent {
     protected State state = State.ALIVE;
     protected abstract void Execute();
     protected abstract void ExecuteMessage(Message message);
-    protected abstract void updateGUI();
+    
     
     protected Point position;
     
