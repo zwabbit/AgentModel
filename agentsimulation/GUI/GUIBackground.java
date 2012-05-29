@@ -9,6 +9,10 @@ import java.util.*;
 
 public class GUIBackground extends JFrame implements MouseListener, MouseMotionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	static JPanel gameBoard;
 	static JLayeredPane layeredPane;
 	static JLabel label;
@@ -92,8 +96,9 @@ public class GUIBackground extends JFrame implements MouseListener, MouseMotionL
 	
 	private static void clicked(Object source) {
 		// TODO Auto-generated method stub
-		((JPanel)source).setBackground(Color.getHSBColor((float) 0.5, (float)0.4, 2));
-		GUIMain.updateInfoPanel((JPanel)source);
+		//((JPanel)source).setBackground(Color.getHSBColor((float) 0.5, (float)0.4, 2));
+		GUIMain.setInfoPanelTarget((JPanel)source);
+		//System.out.println(source);
 		return;
 	}
 	

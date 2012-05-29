@@ -4,21 +4,28 @@ package agentsimulation.GUI;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.image.ImageObserver;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.swing.JPanel;
 
+import agentsimulation.AgentVariable;
+import agentsimulation.Dispatcher;
 import agentsimulation.World;
 import agentsimulation.Agents.Agent;
 import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
+import agentsimulation.Messages.UpdateGUI;
 
 public class GUIMain {
 	public static GUIBackground background;
 	public static GUIControls controls;
 	private static int xDim;
 	private static int yDim;
+	private static Patch infoPatch;
+	private static int simSpeed;
 	//private static HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>> variablesMap;
 	private static HashMap<Class<? extends Agent>, Integer> agentsMap;
 	private static GUIPatchInfo patchInfo;
@@ -30,9 +37,11 @@ public class GUIMain {
 		patchInfo = new GUIPatchInfo();
 		//variablesMap = new HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>>();
 		agentsMap = new HashMap<Class<? extends Agent>, Integer>();
+		infoPatch = World.patchMap.get(new Point(0,0));
 		
 		xDim = x;
 		yDim = y;
+		simSpeed = 1;
 		System.out.flush();	
 		
 		drawNext();
@@ -47,12 +56,13 @@ public class GUIMain {
 		
 		controls.pack();
 		controls.setResizable(true);
-		controls.setLocationRelativeTo(null);
+		
+		controls.setLocation(new Point(background.getLocationOnScreen().x + background.getSize().width, background.getLocationOnScreen().y));
 		controls.setVisible(true);
 		
 		patchInfo.pack();
 		patchInfo.setResizable(true);
-		patchInfo.setLocationRelativeTo(null);
+		patchInfo.setLocation(new Point(background.getLocationOnScreen().x - patchInfo.getSize().width, background.getLocationOnScreen().y));
 		patchInfo.setVisible(true);
 	}
 	
@@ -65,7 +75,7 @@ public class GUIMain {
 		
 		if (c == Patch.class){
 			//if(curr == States.NULL){
-				//System.out.println("updat p");
+
 				if((int)vars.get("food") > 0){
 					
 					BoardState.setState(loc.x, loc.y, States.FOOD);
@@ -76,7 +86,7 @@ public class GUIMain {
 			//}
 		}
 		else if (c == Ant.class) {
-			//System.out.println(vars);
+
 			BoardState.setState(loc.x, loc.y, States.ANT);
 		}
 		else{
@@ -90,8 +100,15 @@ public class GUIMain {
 		
 	}
 	
-	public static void drawNext(){
+	public static void setSimSpeed(int s){
+		simSpeed = s;
+	}
 	
+	public static void drawNext(){
+	if (infoPatch != null){
+		//System.out.println(infoPatch);
+		Dispatcher.SendMessage(new UpdateGUI(infoPatch, null));
+	}
 		for(int i = 0;i<yDim;i++){
 			for(int j=0;j<xDim;j++){
 				//JPanel square = null;
@@ -125,11 +142,13 @@ public class GUIMain {
 						square.setBackground(Color.blue);
 					break;
 				}
+				
 				//System.out.println(background.getComponentAt(j, i) + "\t");
 				//System.out.print(BoardState.getState(j, i) +"\t");
 			}
 			//System.out.println();
 		}
+		waitMillis(simSpeed * 20);
 		//clearAgents();
 		//System.out.println();
 	}
@@ -144,8 +163,46 @@ public class GUIMain {
 		}
 	}
 
-	public static void updateInfoPanel(JPanel source) {
+	public static void updateInfoPanel(HashMap<Class, HashMap<Integer, ArrayList<AgentVariable>>> vars) {
 		// TODO Auto-generated method stub
-		System.out.println(source.getLocation());
+		//System.out.println(vars.getLocation());
+		String pString = new String();
+		String aString = new String();
+		for(Class c: vars.keySet()){
+			if(c == Patch.class){
+				pString = "Patch: ";
+				for(AgentVariable v:vars.get(c).get(0)){
+					pString = pString + "\n" + v.getName() + ": " + v.getStringVal();
+				}
+			}
+			else{
+				aString = "Agents: \n";
+				for(Integer i:vars.get(c).keySet()){
+					aString = c.getName() + " " + i + "\n ";
+					for(AgentVariable v:vars.get(c).get(i)){
+						aString = aString + "\n" + v.getName() + ": " + v.getStringVal();
+					}
+				}
+			}
+		}
+		GUIPatchInfo.updateAgentInfo(aString);
+		GUIPatchInfo.updatePatchInfo(pString);
+	}
+
+	public static void setInfoPanelTarget(JPanel source) {
+		// TODO Auto-generated method stub
+		Point target = new Point(source.getLocation().x / (500 / xDim), source.getLocation().y / (500 / yDim));
+		infoPatch = World.patchMap.get(target);
+		System.out.println(target);
+	}
+	
+	public static void waitMillis(int n){
+		long t0, t1;
+		t0 = System.currentTimeMillis();
+		
+		do{
+			t1 = System.currentTimeMillis();
+		}
+		while(t1 - t0 < n);
 	}
 }

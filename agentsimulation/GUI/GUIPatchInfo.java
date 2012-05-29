@@ -30,11 +30,11 @@ public class GUIPatchInfo extends JFrame{
 		panel.setLayout(null);	
 
 		patchVars = new JTextArea(5, 20);
-		patchVars.setBounds(0, 0, 100, 100);
+		patchVars.setBounds(0, 0, 300, 100);
 		patchVars.setEditable(false);
 
 		agentVars = new JTextArea(5, 20);
-		agentVars.setBounds(0, 110, 100, 100);
+		agentVars.setBounds(0, 110, 300, 190);
 		agentVars.setEditable(false);
 		
 
@@ -46,13 +46,12 @@ public class GUIPatchInfo extends JFrame{
 	}
 	
 
-	public static void updateInfo(HashMap<String, Object> pVars, HashMap<String, Object> aVars){
-		for(String v:pVars.keySet()){
-			patchVars.setText(patchVars.getText() + "\n" + v + ": " + pVars.get(v));
-		}
-		for(String v:aVars.keySet()){
-			agentVars.setText(agentVars.getText() + "\n" + v + ": " + pVars.get(v));
-		}
+	public static void updatePatchInfo(String p){
+		patchVars.setText(p);
+	}
+	
+	public static void updateAgentInfo(String a){
+		agentVars.setText(a);
 	}
 	
 }

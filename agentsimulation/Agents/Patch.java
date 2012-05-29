@@ -4,6 +4,7 @@
  */
 package agentsimulation.Agents;
 
+import agentsimulation.AgentVariable;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.GUIMain;
 import agentsimulation.GUI.States;
@@ -12,6 +13,7 @@ import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
 import agentsimulation.Messages.UpdateGUI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,7 +43,7 @@ public class Patch extends Agent {
     
     @Override
     protected void Execute() {
-        if(patchRandom.nextInt(30) == 0) food.addAndGet(patchRandom.nextInt(MAX_GROW));
+        if(patchRandom.nextInt(1000) == 0) food.addAndGet(patchRandom.nextInt(MAX_GROW));
         updateGUI();
     }
 
@@ -75,7 +77,32 @@ public class Patch extends Agent {
             }
         }
         if(message instanceof UpdateGUI){
-
+        	HashMap<Class, HashMap<Integer, ArrayList<AgentVariable>>> vars = new HashMap<Class, HashMap<Integer, ArrayList<AgentVariable>>>();
+        	for(Class c : presentAgents.keySet()){
+        		HashMap<Integer, ArrayList<AgentVariable>> curr = new HashMap<Integer, ArrayList<AgentVariable>>();
+        		for(Integer i:presentAgents.get(c).keySet()){
+        			Agent a = presentAgents.get(c).get(i);
+        			ArrayList<AgentVariable> theseVars = new ArrayList<AgentVariable>();
+        			theseVars.add(new AgentVariable("ID", a.getID()));
+        			theseVars.add(new AgentVariable("position", a.GetPosition()));
+        			if(c == Ant.class){
+        				theseVars.add(new AgentVariable("foodCarrying", ((Ant)a).foodCarrying));
+        			}
+        			if(c == WolfSpider.class){
+        				
+        			}
+        			curr.put(i, theseVars);
+        		}
+        		vars.put(c, curr);
+        	}
+        	HashMap<Integer, ArrayList<AgentVariable>> curr = new HashMap<Integer, ArrayList<AgentVariable>>();
+        	ArrayList<AgentVariable> patchVars = new ArrayList<AgentVariable>();
+        	patchVars.add(new AgentVariable("ID", this.getID()));
+			patchVars.add(new AgentVariable("position", this.GetPosition()));
+			patchVars.add(new AgentVariable("food", this.GetFood()));
+			curr.put(0, patchVars);
+			vars.put(Patch.class, curr);
+			GUIMain.updateInfoPanel(vars);
         }
         
         updateGUI();
@@ -83,7 +110,12 @@ public class Patch extends Agent {
     
     public int Eat(int amount)
     {
-        return food.addAndGet(-amount);
+        int last = food.addAndGet(-amount);
+        if(last < amount){
+        	food.set(0);
+        	return last - amount;
+        }
+    	return last;
     }
     
     public LinkedBlockingQueue<Agent> GetAgents(Class agentClass)

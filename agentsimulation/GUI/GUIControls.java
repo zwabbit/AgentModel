@@ -80,18 +80,18 @@ public class GUIControls extends JFrame implements ItemListener, ChangeListener{
 		waitForGui.setBounds(60, 100, 120, 30);
 		
 		 //Create the slider.
-        speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 20, 1);
+        speedSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
          
  
         speedSlider.addChangeListener(this);
  
         //Turn on labels at major tick marks.
  
-        speedSlider.setMajorTickSpacing(5);
+        speedSlider.setMajorTickSpacing(25);
         speedSlider.setMinorTickSpacing(1);
         speedSlider.setPaintTicks(true);
         speedSlider.setPaintLabels(true);
-        speedSlider.setBounds(0, 160, 200, 45);
+        speedSlider.setBounds(0, 160, 300, 45);
         
 		/*
 		resetButton = new JButton("Reset");
@@ -153,7 +153,7 @@ public class GUIControls extends JFrame implements ItemListener, ChangeListener{
 		JSlider source = (JSlider)e.getSource();
 		if (!source.getValueIsAdjusting()) {
 			int speed = (int)source.getValue();
-			//GUIActor.simSpeed = speed;
+			GUIMain.setSimSpeed(speed);
 		}
 	}
 }
