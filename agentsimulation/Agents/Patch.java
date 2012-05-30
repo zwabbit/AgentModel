@@ -5,6 +5,7 @@
 package agentsimulation.Agents;
 
 import agentsimulation.AgentVariable;
+import agentsimulation.World;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.GUIMain;
 import agentsimulation.GUI.States;
@@ -29,6 +30,7 @@ public class Patch extends Agent {
     
     public static int MAX_FOOD = 50;
     public static int MAX_GROW = 5;
+    private static int growthInterval;
     private static Random patchRandom =  null;
     
     public Patch(int x, int y)
@@ -38,12 +40,12 @@ public class Patch extends Agent {
             patchRandom = new Random();
         if(presentAgents == null) presentAgents = new HashMap<Class, HashMap<Integer, Agent>>();
         food = new AtomicInteger(patchRandom.nextInt(MAX_FOOD));
-        
+        growthInterval = World.patchMap.entrySet().size() * 2;
     }
     
     @Override
     protected void Execute() {
-        if(patchRandom.nextInt(1000) == 0) food.addAndGet(patchRandom.nextInt(MAX_GROW));
+        if(patchRandom.nextInt(growthInterval) == 0) food.addAndGet(patchRandom.nextInt(MAX_GROW));
         updateGUI();
     }
 
