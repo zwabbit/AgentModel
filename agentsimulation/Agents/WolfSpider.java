@@ -5,15 +5,12 @@
 package agentsimulation.Agents;
 
 import agentsimulation.GUI.BoardState;
-import agentsimulation.GUI.GUIMain;
 import agentsimulation.GUI.States;
 import agentsimulation.Messages.Die;
 import agentsimulation.Messages.Message;
 import agentsimulation.World;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *

@@ -1,15 +1,12 @@
 package agentsimulation.Agents;
 
-import java.awt.Point;
-import java.util.HashMap;
-import java.util.Random;
-
-import agentsimulation.World;
 import agentsimulation.GUI.BoardState;
-import agentsimulation.GUI.GUIMain;
 import agentsimulation.GUI.States;
 import agentsimulation.Messages.Message;
 import agentsimulation.Messages.UpdateGUI;
+import agentsimulation.World;
+import java.awt.Point;
+import java.util.Random;
 
 public class Ant extends Agent{
 

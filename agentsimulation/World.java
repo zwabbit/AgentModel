@@ -9,7 +9,6 @@ import agentsimulation.Agents.Patch;
 import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.States;
-
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Random;

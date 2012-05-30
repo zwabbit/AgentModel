@@ -5,7 +5,6 @@
 package agentsimulation.Agents;
 
 import agentsimulation.Dispatcher;
-import agentsimulation.GUI.GUIMain;
 import agentsimulation.Messages.Die;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;

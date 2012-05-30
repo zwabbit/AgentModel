@@ -12,7 +12,6 @@ import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
 import agentsimulation.Messages.UpdateGUI;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
