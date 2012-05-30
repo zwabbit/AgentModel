@@ -60,29 +60,45 @@ public class Dispatcher implements Runnable {
              * agent queues are empty, decrement the latch and we'll wake up
              * again in this thread.
              */
-            do {
-                for (Message message : currentMessageList) {
-                    LinkedBlockingQueue<Message> mQueue = agentMessages.get(message.receivingAgent.getID());
-                    if (mQueue == null) {
-                        mQueue = new LinkedBlockingQueue<>();
-                        agentMessages.put(message.receivingAgent.getID(), mQueue);
-                    }
-                    mQueue.add(message);
-                }
-
-                currentMessageList.clear();
-            
-                LinkedBlockingQueue<LinkedBlockingQueue<Message>> messages = new LinkedBlockingQueue<>(agentMessages.values());
-
-                taskExecutor = Executors.newFixedThreadPool(cpuCount);
-                for(int index = 0; index < cpuCount; index++)
+            while (!currentMessageList.isEmpty() || !currentAgents.isEmpty()) {
+                
+                if(!currentMessageList.isEmpty())
                 {
-                    taskExecutor.execute(new ExecutionThread(currentAgents, messages));
-                }
+                    for (Message message : currentMessageList) {
+                        LinkedBlockingQueue<Message> mQueue = agentMessages.get(message.receivingAgent.getID());
+                        if (mQueue == null) {
+                            mQueue = new LinkedBlockingQueue<>();
+                            agentMessages.put(message.receivingAgent.getID(), mQueue);
+                        }
+                        mQueue.add(message);
+                    }
 
-                taskExecutor.shutdown();
-                while (!taskExecutor.isTerminated()) {}
-            }while (!currentMessageList.isEmpty());
+                    currentMessageList.clear();
+
+                    LinkedBlockingQueue<LinkedBlockingQueue<Message>> messages = new LinkedBlockingQueue<>(agentMessages.values());
+                    
+                    taskExecutor = Executors.newFixedThreadPool(cpuCount);
+                    for (int index = 0; index < cpuCount; index++) {
+                        taskExecutor.execute(new ExecutionThread(null, messages));
+                    }
+
+                    taskExecutor.shutdown();
+                    while (!taskExecutor.isTerminated()) {
+                    }
+                }
+                
+                if(!currentAgents.isEmpty())
+                {
+                    taskExecutor = Executors.newFixedThreadPool(cpuCount);
+                    for (int index = 0; index < cpuCount; index++) {
+                        taskExecutor.execute(new ExecutionThread(currentAgents, null));
+                    }
+                    
+                    taskExecutor.shutdown();
+                    while (!taskExecutor.isTerminated()) {
+                    }
+                }
+            }
 
             taskExecutor = Executors.newFixedThreadPool(cpuCount);
             LinkedBlockingQueue<Patch> patchList = new LinkedBlockingQueue<>(patches.values());

@@ -25,22 +25,28 @@ public class ExecutionThread implements Runnable {
     @Override
     public void run() {
         LinkedBlockingQueue<Message> messages;
-        while(true)
+        if(messageQueue != null)
         {
-            messages = messageQueue.poll();
-            if(messages == null)
-                break;
-            for(Message message : messages)
-                message.receivingAgent.SetNextMessage(message);
+            while (true) {
+                messages = messageQueue.poll();
+                if (messages == null) {
+                    break;
+                }
+                for (Message message : messages) {
+                    message.receivingAgent.SetNextMessage(message);
+                }
+            }
         }
         
-        while(true)
+        if(agentQueue != null)
         {
-        	
-            Agent agent = agentQueue.poll();
-            if(agent == null)
-                break;
-            agent.SetNext();
+            while (true) {
+                Agent agent = agentQueue.poll();
+                if (agent == null) {
+                    break;
+                }
+                agent.SetNext();
+            }
         }
     }
     
