@@ -31,11 +31,7 @@ public class WolfSpider extends Agent {
     @Override
     protected void Execute() {
         Patch p = World.patchMap.get(position);
-        LinkedBlockingQueue<Agent> ants = p.GetAgents(Ant.class);
-        Ant ant = null;
-        if(ants != null){
-        	ant = (Ant)ants.poll();
-        }
+        Ant ant = (Ant)p.GetOneOf(Ant.class);
         if(ant != null)
         {
             Die die = new Die(ant, this);
@@ -76,9 +72,6 @@ public class WolfSpider extends Agent {
             this.Move(new Point(nextX,nextY));
             
             stalking = false;
-
-            
-            return;
         }
     }
 

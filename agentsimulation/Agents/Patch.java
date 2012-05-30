@@ -15,6 +15,7 @@ import agentsimulation.Messages.UpdateGUI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -125,6 +126,24 @@ public class Patch extends Agent {
     		list = new LinkedBlockingQueue<Agent>(presentAgents.get(agentClass).values());
         }       
         return list;
+    }
+    
+    public Agent GetOneOf(Class agentClass)
+    {
+        Agent agent;
+        if(presentAgents.get(agentClass) != null)
+        {
+            try {
+                agent = presentAgents.get(agentClass).values().iterator().next();
+                return agent;
+            }
+            catch(NoSuchElementException nse)
+            {
+                return null;
+            }
+        }
+        
+        return null;
     }
     
     public int GetFood()
