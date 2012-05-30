@@ -185,15 +185,16 @@ public class GUIMain {
 				}
 			}
 		}
-		GUIPatchInfo.updateAgentInfo(aString);
+		if(!aString.equalsIgnoreCase("")) GUIPatchInfo.updateAgentInfo(aString);
 		GUIPatchInfo.updatePatchInfo(pString);
 	}
 
 	public static void setInfoPanelTarget(JPanel source) {
 		// TODO Auto-generated method stub
+		GUIPatchInfo.updateAgentInfo("");
+		GUIPatchInfo.updatePatchInfo("");
 		Point target = new Point(source.getLocation().x / (500 / xDim), source.getLocation().y / (500 / yDim));
 		infoPatch = World.patchMap.get(target);
-		System.out.println(target);
 	}
 	
 	public static void waitMillis(int n){

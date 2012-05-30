@@ -110,12 +110,13 @@ public class Patch extends Agent {
     
     public int Eat(int amount)
     {
-        int last = food.addAndGet(-amount);
-        if(last < amount){
+    	int last = food.get();
+    	int got = food.addAndGet(-amount);
+        if(got < 0){
         	food.set(0);
-        	return last - amount;
+        	return last;
         }
-    	return last;
+    	return amount;
     }
     
     public LinkedBlockingQueue<Agent> GetAgents(Class agentClass)

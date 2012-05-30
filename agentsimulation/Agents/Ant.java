@@ -12,6 +12,7 @@ public class Ant extends Agent{
 
 	protected int foodCarrying;
 	private Random moveRand = new Random();
+	private Point center = new Point(World.xDim / 2, World.yDim / 2);
 	
 	public Ant (int x, int y){
 		super(x, y);
@@ -22,8 +23,19 @@ public class Ant extends Agent{
 		// TODO Auto-generated method stub
 		//check if has food
 		//System.out.println("ant execution started");
-		if (foodCarrying > 0){
-			foodCarrying = 0;
+		if (foodCarrying > 0 ){
+			if(Point.distance(position.x, position.y, center.x, center.y) <= 2){
+				foodCarrying = 0;
+			}
+			else{
+				int xDir = 0;
+				int yDir = 0;
+				if(center.x > position.x) {xDir = 1;}
+				else if (center.x < position.x){xDir = -1;}
+				if(center.y > position.y) {yDir = 1;}
+				else if (center.y < position.y) {yDir = -1;}
+				Move(new Point(position.x + xDir, position.y + yDir));
+			}
 			//System.out.println("carrying food");
 			//if yes, check if in drop zone
 				//if yes, drop food, end turn
@@ -32,7 +44,10 @@ public class Ant extends Agent{
 		else{
 			//if no, check current patch for food (ignoring food in drop zone)
 			Patch currLoc = World.patchMap.get(position);
-			int tempFood = currLoc.Eat(50);
+			int tempFood = 0;
+			if(Point.distance(position.x, position.y, center.x, center.y) > 2){
+				tempFood = currLoc.Eat(50);
+			}
 			if (tempFood > 0){
 				//System.out.println("got food");
 				foodCarrying = tempFood; 
