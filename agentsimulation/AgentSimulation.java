@@ -21,12 +21,12 @@ public class AgentSimulation {
     	//start world
     	//start dispatcher
     	
-    	int x = 25, y = 25;
+    	int x = 100, y = 100;
     	new BoardState(x,y);
     	World world = new World(x, y);
     	t = new Thread(new Dispatcher(World.patchMap));
     	world.initializeAnts(9);
-    	world.initializeWolfSpiders(1);
+    	world.initializeWolfSpiders(2);
     	new GUIMain(x, y);   	
     }
     
