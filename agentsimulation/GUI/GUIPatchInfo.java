@@ -32,10 +32,12 @@ public class GUIPatchInfo extends JFrame{
 		patchVars = new JTextArea(5, 20);
 		patchVars.setBounds(0, 0, 300, 100);
 		patchVars.setEditable(false);
+		patchVars.setLineWrap(true);
 
 		agentVars = new JTextArea(5, 20);
 		agentVars.setBounds(0, 110, 300, 190);
 		agentVars.setEditable(false);
+		agentVars.setLineWrap(true);
 		
 
 		//Add Components to this panel.

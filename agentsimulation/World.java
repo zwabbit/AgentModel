@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import agentsimulation.spacial.Quadtree;
+import agentsimulation.spacial.Envelope;
 
 /**
  *
@@ -23,9 +25,11 @@ import java.util.Random;
  */
 public class World {
     public static HashMap<Point, Patch> patchMap;
-   public static QuadTree<Integer, Patch> patchTree;
+   //public static QuadTree<Integer, Patch> patchTree;
+    public static Quadtree patchTree;
    // public static KDTreeC patchTree;
     public static HashMap<Integer, Ant> antList;
+    public static HashMap<Class<? extends Agent>, Quadtree> agentTrees;
     public static boolean started = false;
     public static int xDim;
     public static int yDim;
@@ -34,8 +38,9 @@ public class World {
     {
         if(patchMap == null) patchMap = new HashMap<>();
         if(antList == null) antList = new HashMap<>();
-        if(patchTree == null) patchTree = new QuadTree<Integer, Patch>();
+        if(patchTree == null) patchTree = new Quadtree();
         //if(patchTree == null) patchTree = new KDTreeC(2);
+        if(agentTrees == null) agentTrees = new HashMap<>();
         for(int yIndex = 0; yIndex < y; ++yIndex)
         {
             for(int xIndex = 0; xIndex < x; ++xIndex)
@@ -43,7 +48,7 @@ public class World {
                 Patch p = new Patch(xIndex, yIndex);
                 patchMap.put(p.GetPosition(), p);
             
-                patchTree.insert(xIndex, yIndex, p);
+                patchTree.insert(new Envelope(xIndex, yIndex, xIndex + 1, yIndex + 1), p);
                             
                 /*
                 double[] loc = new double[2];
@@ -67,9 +72,14 @@ public class World {
     
     public void initializeAnts(int num){
     	Random antRandom = new Random();
+    	Quadtree antTree = new Quadtree();
+    	agentTrees.put(Ant.class, antTree);
     	for(int i = 0;i<num;i++){
-    		Ant newAnt = new Ant(antRandom.nextInt(xDim), antRandom.nextInt(yDim));
-    		antList.put(newAnt.getID(),newAnt);
+    		int x = antRandom.nextInt(xDim);
+    		int y = antRandom.nextInt(yDim);
+    		Ant newAnt = new Ant(x, y);
+    		antTree.insert(new Envelope(x, x+1, y, y+1), newAnt);
+    		antList.put(newAnt.getID(), newAnt);
     	}
  //       System.out.println(num + " ants at " + antList.get(0).GetPosition());
         Dispatcher.agentList.addAll(antList.values());
@@ -101,16 +111,14 @@ public class World {
     
     public static List<Agent> agentsInRadius(int x, int y, Class<? extends Agent> type, int r){
     	List<Agent> L = new ArrayList<Agent>();
-    	Interval<Integer> xInt = new Interval<Integer>(x - r, x + r);
-    	Interval<Integer> yInt = new Interval<Integer>(y - r, y + r);
-    	Interval2D<Integer> interv = new Interval2D<Integer>(xInt, yInt);
-    	List<Patch> rectangle = patchTree.query2D(interv);
-    	List<Patch> patches = new ArrayList<Patch>();
-    	for(Patch pat:rectangle){
-    		if(Math.abs(x - pat.GetPosition().x) <= r && Math.abs(y - pat.GetPosition().y) <= r){
-    			patches.add(pat);
+    	Quadtree thisTree = agentTrees.get(type);
+    	List<Agent> rectangle = thisTree.query(new Envelope(x-r,x+r,y-r,y+r));
+    	for(Agent a:rectangle){
+    		if(Math.abs(x - a.GetPosition().x) <= r && Math.abs(y - a.GetPosition().y) <= r){
+    			L.add(a);
     		}
     	}
+    	/*
     	for(Patch p:patches){
     		if(p.GetAgents(type) != null){
     			Iterator<Agent> iter = p.GetAgents(type).iterator();
@@ -118,7 +126,7 @@ public class World {
     				L.add(iter.next());
     			}
     		}
-    	}
+    	}*/
     	return L;
     }
     
@@ -131,11 +139,8 @@ public class World {
     public static List<Patch> patchesInRadius(int pX, int pY, int r){
     	List<Patch> L = new ArrayList<Patch>();
    	
-    	
-    	Interval<Integer> xInt = new Interval<Integer>(pX - r, pX + r);
-    	Interval<Integer> yInt = new Interval<Integer>(pY -r, pY + r);
-    	Interval2D<Integer> interv = new Interval2D<Integer>(xInt, yInt);
-    	List<Patch> rets = patchTree.query2D(interv);
+    
+    	List<Patch> rets = patchTree.query(new Envelope(pX - r, pX + r, pY - r, pY + r));
     	for(Patch pat:rets){
     		if(Math.abs(pX - pat.GetPosition().x) <= r && Math.abs(pY - pat.GetPosition().y) <= r){
     			L.add(pat);

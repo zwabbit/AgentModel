@@ -5,6 +5,7 @@
 package agentsimulation.Agents;
 
 import agentsimulation.AgentVariable;
+import agentsimulation.Dispatcher;
 import agentsimulation.World;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.GUIMain;
@@ -43,7 +44,7 @@ public class Patch extends Agent {
         growthInterval = World.patchMap.entrySet().size() * 2;
     }
     
-    @Override
+    @Override 
     protected void Execute() {
         if(patchRandom.nextInt(growthInterval) == 0) food.addAndGet(patchRandom.nextInt(MAX_GROW));
         updateGUI();
@@ -63,6 +64,7 @@ public class Patch extends Agent {
             }
             
             agents.put(enter.sendingAgent.getID(), enter.sendingAgent);
+            Dispatcher.addFinalOperation(message);
         }
         
         if(message instanceof LeavePatch)
@@ -77,6 +79,7 @@ public class Patch extends Agent {
                     presentAgents.remove(leave.sendingAgent.getClass());
                 }
             }
+            Dispatcher.addFinalOperation(message);
         }
         if(message instanceof UpdateGUI){
         	HashMap<Class, HashMap<Integer, ArrayList<AgentVariable>>> vars = new HashMap<Class, HashMap<Integer, ArrayList<AgentVariable>>>();

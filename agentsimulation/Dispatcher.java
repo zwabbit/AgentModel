@@ -9,9 +9,16 @@ import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
 import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.GUIMain;
+import agentsimulation.GUI.GUIPatchInfo;
+import agentsimulation.Messages.EnterPatch;
+import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
+import agentsimulation.spacial.Envelope;
+
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,6 +32,7 @@ public class Dispatcher implements Runnable {
     public static LinkedBlockingQueue<Agent> agentList;
     private static LinkedBlockingQueue<Message> messageList;
     private static LinkedBlockingQueue<Message> currentMessageList;
+    private static Queue<Message> finalOperations;
     
     private HashMap<Point, Patch> patches;
     
@@ -37,6 +45,7 @@ public class Dispatcher implements Runnable {
         if(agentList == null) agentList = new LinkedBlockingQueue<>();
         if(messageList == null) messageList = new LinkedBlockingQueue<>();
         if(currentMessageList == null) currentMessageList = new LinkedBlockingQueue<>();
+        if(finalOperations == null) finalOperations = new LinkedBlockingQueue<Message>();
         
         this.patches = patchMap;
     }
@@ -107,10 +116,11 @@ public class Dispatcher implements Runnable {
             for(int index = 0; index < cpuCount; index++) {
                 taskExecutor.execute(new PatchExecutionThread(patchList));
             }
-            
+            //GUIPatchInfo.updateAgentInfo(World.agentsInRadius(50, 50, Ant.class, 3).toString());
 
             taskExecutor.shutdown();
             while (!taskExecutor.isTerminated()) {}
+            executeFinals();
             GUIMain.drawNext();
         }
     }
@@ -125,5 +135,37 @@ public class Dispatcher implements Runnable {
         {
             messageList.add(message);
         }
+    }
+    
+    public static void addFinalOperation(Message m){
+    	finalOperations.add(m);
+    }
+    
+    private static void executeFinals(){
+    	HashMap<Agent, Point> enter = new HashMap<>();
+		HashMap<Agent, Point> leave = new HashMap<>();
+    	while(!finalOperations.isEmpty()){
+    		Message current = finalOperations.poll();
+    		
+    		if(current instanceof EnterPatch){
+    			EnterPatch en = (EnterPatch)current;
+    			enter.put(en.sendingAgent, en.receivingAgent.GetPosition());
+    		}
+    		else if(current instanceof LeavePatch){
+    			leave.put(((LeavePatch)current).sendingAgent, ((LeavePatch)current).receivingAgent.GetPosition());
+    		}
+    		else{
+    			throw new UnsupportedOperationException("Final not supported yet.");
+    		}
+    	}
+    	
+    	for(Agent l:leave.keySet()){
+    		Point loc = leave.get(l);
+    		World.agentTrees.get(l.getClass()).remove(new Envelope(loc.x, loc.x+1, loc.y, loc.y+1), l);
+    	}
+    	for(Agent e:enter.keySet()){
+    		Point loc = enter.get(e);
+    		World.agentTrees.get(e.getClass()).insert(new Envelope(loc.x, loc.x+1, loc.y, loc.y+1), e);
+    	}
     }
 }
