@@ -25,7 +25,7 @@ public class AgentSimulation {
     	new BoardState(x,y);
     	World world = new World(x, y);
     	t = new Thread(new Dispatcher(World.patchMap));
-    	world.initializeAnts(9);
+    	world.initializeAnts(8);
     	world.initializeWolfSpiders(2);
     	new GUIMain(x, y);   	
     }

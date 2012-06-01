@@ -5,7 +5,9 @@
 package agentsimulation;
 
 import agentsimulation.Agents.Agent;
+import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
+import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.GUIMain;
 import agentsimulation.Messages.Message;
 import java.awt.Point;
@@ -105,7 +107,7 @@ public class Dispatcher implements Runnable {
             for(int index = 0; index < cpuCount; index++) {
                 taskExecutor.execute(new PatchExecutionThread(patchList));
             }
-            System.out.println(World.patchesInRadius(World.patchMap.get(new Point(10,10)), 3));
+            
 
             taskExecutor.shutdown();
             while (!taskExecutor.isTerminated()) {}

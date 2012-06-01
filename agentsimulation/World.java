@@ -4,6 +4,7 @@
  */
 package agentsimulation;
 
+import agentsimulation.Agents.Agent;
 import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
 import agentsimulation.Agents.WolfSpider;
@@ -12,6 +13,7 @@ import agentsimulation.GUI.States;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -95,6 +97,29 @@ public class World {
         {
             return;
         }
+    }
+    
+    public static List<Agent> agentsInRadius(int x, int y, Class<? extends Agent> type, int r){
+    	List<Agent> L = new ArrayList<Agent>();
+    	Interval<Integer> xInt = new Interval<Integer>(x - r, x + r);
+    	Interval<Integer> yInt = new Interval<Integer>(y - r, y + r);
+    	Interval2D<Integer> interv = new Interval2D<Integer>(xInt, yInt);
+    	List<Patch> rectangle = patchTree.query2D(interv);
+    	List<Patch> patches = new ArrayList<Patch>();
+    	for(Patch pat:rectangle){
+    		if(Math.abs(x - pat.GetPosition().x) <= r && Math.abs(y - pat.GetPosition().y) <= r){
+    			patches.add(pat);
+    		}
+    	}
+    	for(Patch p:patches){
+    		if(p.GetAgents(type) != null){
+    			Iterator<Agent> iter = p.GetAgents(type).iterator();
+    			while(iter.hasNext()){
+    				L.add(iter.next());
+    			}
+    		}
+    	}
+    	return L;
     }
     
     public static List<Patch> patchesInRadius(Patch p, int r){
