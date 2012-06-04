@@ -13,10 +13,7 @@ import agentsimulation.GUI.States;
 import agentsimulation.spacial.Envelope;
 import agentsimulation.spacial.Quadtree;
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  *
@@ -108,14 +105,59 @@ public class World {
         }
     }
     
-    public static List<Agent> agentsInRadius(int x, int y, Class<? extends Agent> type, int r){
-    	List<Agent> L = new ArrayList<>();
+    public static ArrayList<Agent> agentsInRadiusGreaterThanE(int x, int y, Class<? extends Agent> type, int r, int level, String attribute)
+    {
+        ArrayList<Agent> agents = agentsInRadius(x, y, type, r);
+        ArrayList<Agent> matches = new ArrayList<>();
+        for(Agent a : agents)
+        {
+            if(a.GetAttribute(attribute) >= level)
+            {
+                matches.add(a);
+            }
+        }
+        
+        return matches;
+    }
+    
+    public static ArrayList<Agent> agentsInRadiusLessThanE(int x, int y, Class<? extends Agent> type, int r, int level, String attribute)
+    {
+        ArrayList<Agent> agents = agentsInRadius(x, y, type, r);
+        ArrayList<Agent> matches = new ArrayList<>();
+        for(Agent a : agents)
+        {
+            if(a.GetAttribute(attribute) <= level)
+            {
+                matches.add(a);
+            }
+        }
+        
+        return matches;
+    }
+    
+    public static ArrayList<Agent> agentsInRadiusCompare(int x, int y, Class<? extends Agent> type, int r, Comparator<Agent> comparator, Agent baseline)
+    {
+        ArrayList<Agent> agents = agentsInRadius(x, y, type, r);
+        ArrayList<Agent> matches = new ArrayList<>();
+        for(Agent a : agents)
+        {
+            if(comparator.compare(a, baseline) >= 0)
+            {
+                matches.add(a);
+            }
+        }
+        
+        return matches;
+    }
+    
+    public static ArrayList<Agent> agentsInRadius(int x, int y, Class<? extends Agent> type, int r){
+    	ArrayList<Agent> L = new ArrayList<>();
     	Quadtree thisTree = agentTrees.get(type);
     	List<Agent> rectangle = thisTree.query(new Envelope(x-r,x+r,y-r,y+r));
     	for(Agent a:rectangle){
     		//if(Math.abs(x - a.GetPosition().x) <= r && Math.abs(y - a.GetPosition().y) <= r){
     		if(Point.distance(x, y, a.GetPosition().x, a.GetPosition().y) <= r){
-    			L.add(a);
+                    L.add(a);
     		}
     		//}
     	}
