@@ -10,8 +10,8 @@ import agentsimulation.Agents.Patch;
 import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.States;
-import agentsimulation.spacial.Envelope;
-import agentsimulation.spacial.Quadtree;
+import agentsimulation.Spatial.Envelope;
+import agentsimulation.Spatial.Quadtree;
 import java.awt.Point;
 import java.util.*;
 

@@ -31,7 +31,7 @@
  *     (250)385-6040
  *     www.vividsolutions.com
  */
-package agentsimulation.spacial;
+package agentsimulation.Spatial;
 
 /**
  * Provides a test for whether an interval is

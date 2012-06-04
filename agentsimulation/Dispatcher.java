@@ -13,7 +13,7 @@ import agentsimulation.GUI.GUIPatchInfo;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
-import agentsimulation.spacial.Envelope;
+import agentsimulation.Spatial.Envelope;
 
 import java.awt.Point;
 import java.util.ArrayList;

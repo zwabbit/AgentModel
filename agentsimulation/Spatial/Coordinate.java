@@ -30,7 +30,7 @@
 *     (250)385-6040
 *     www.vividsolutions.com
  */
-package agentsimulation.spacial;
+package agentsimulation.Spatial;
 
 import java.io.Serializable;
 import java.util.Comparator;

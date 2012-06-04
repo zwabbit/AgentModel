@@ -1,4 +1,4 @@
-package agentsimulation.spacial;
+package agentsimulation.Spatial;
 
 /**
  * A visitor for items in an index.

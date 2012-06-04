@@ -31,7 +31,7 @@
  *     (250)385-6040
  *     www.vividsolutions.com
  */
-package agentsimulation.spacial;
+package agentsimulation.Spatial;
 
 import java.util.ArrayList;
 import java.util.List;

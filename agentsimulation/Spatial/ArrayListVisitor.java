@@ -1,4 +1,4 @@
-package agentsimulation.spacial;
+package agentsimulation.Spatial;
 
 import java.util.*;
 
