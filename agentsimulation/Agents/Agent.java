@@ -9,6 +9,7 @@ import agentsimulation.Messages.*;
 import agentsimulation.World;
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -19,7 +20,7 @@ public abstract class Agent {
     public enum State { ALIVE, DEAD };
     
     protected State state = State.ALIVE;
-    protected HashMap<String, AtomicInteger> attributes;
+    protected ConcurrentHashMap<String, AtomicInteger> attributes;
     protected abstract void Execute();
     protected abstract void ExecuteMessage(Message message);
     
