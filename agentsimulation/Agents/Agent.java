@@ -5,12 +5,10 @@
 package agentsimulation.Agents;
 
 import agentsimulation.Dispatcher;
-import agentsimulation.Messages.Die;
-import agentsimulation.Messages.EnterPatch;
-import agentsimulation.Messages.LeavePatch;
-import agentsimulation.Messages.Message;
+import agentsimulation.Messages.*;
 import agentsimulation.World;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -21,6 +19,7 @@ public abstract class Agent {
     public enum State { ALIVE, DEAD };
     
     protected State state = State.ALIVE;
+    protected HashMap<String, AtomicInteger> attributes;
     protected abstract void Execute();
     protected abstract void ExecuteMessage(Message message);
     
@@ -37,12 +36,30 @@ public abstract class Agent {
             idIndex = new AtomicInteger();
         
         agentID = idIndex.getAndIncrement();
+        attributes = new HashMap<>();
     }
     
     protected Agent(int x, int y)
     {
         this();
         position = new Point(x, y);
+    }
+    
+    public final boolean AddAttribute(String attribute)
+    {
+        if(attributes.get(attribute) == null)
+        {
+            attributes.put(attribute, new AtomicInteger());
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public final int GetAttribute(String attribute) throws NullPointerException
+    {
+        return attributes.get(attribute).get();
     }
     
     public final Point GetPosition()
@@ -93,9 +110,16 @@ public abstract class Agent {
                 Patch p = World.patchMap.get(position);
                 LeavePatch leave = new LeavePatch(p, this);
                 SendMessage(leave);
+                Killer killer = new Killer(message.sendingAgent, this, true);
+                SendMessage(killer);
                 return;
             }
             ExecuteMessage(message);
+        }
+        else
+        {
+            Killer killer = new Killer(message.sendingAgent, this, false);
+            SendMessage(killer);
         }
     }
     
