@@ -7,6 +7,7 @@ import agentsimulation.Messages.UpdateGUI;
 import agentsimulation.World;
 import java.awt.Point;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Ant extends Agent{
 
@@ -17,6 +18,7 @@ public class Ant extends Agent{
 	public Ant (int x, int y){
 		super(x, y);
 		BoardState.setState(x, y, States.ANT);
+		AddAttribute("foodCarrying");
 	}
 	@Override
 	protected void Execute() {
@@ -69,8 +71,10 @@ public class Ant extends Agent{
 						//if yes, do pheromone action
 						//if no, move to a random (empty?) patch
 		}
-		
-			
+		this.SetAttributeValue("foodCarrying", foodCarrying);
+		if(World.agentsInRadiusLessThanE(this, Ant.class, 3, foodCarrying, "foodCarrying").size() > 0){
+			System.out.println("found");
+		}
 	}
 
 	@Override

@@ -105,9 +105,9 @@ public class World {
         }
     }
     
-    public static ArrayList<Agent> agentsInRadiusGreaterThanE(int x, int y, Class<? extends Agent> type, int r, int level, String attribute)
+    public static ArrayList<Agent> agentsInRadiusGreaterThanE(Agent caller, Class<? extends Agent> type, int r, int level, String attribute)
     {
-        ArrayList<Agent> agents = agentsInRadius(x, y, type, r);
+        ArrayList<Agent> agents = agentsInRadius(caller, type, r);
         ArrayList<Agent> matches = new ArrayList<>();
         for(Agent a : agents)
         {
@@ -120,9 +120,9 @@ public class World {
         return matches;
     }
     
-    public static ArrayList<Agent> agentsInRadiusLessThanE(int x, int y, Class<? extends Agent> type, int r, int level, String attribute)
+    public static ArrayList<Agent> agentsInRadiusLessThanE(Agent caller, Class<? extends Agent> type, int r, int level, String attribute)
     {
-        ArrayList<Agent> agents = agentsInRadius(x, y, type, r);
+        ArrayList<Agent> agents = agentsInRadius(caller, type, r);
         ArrayList<Agent> matches = new ArrayList<>();
         for(Agent a : agents)
         {
@@ -135,9 +135,9 @@ public class World {
         return matches;
     }
     
-    public static ArrayList<Agent> agentsInRadiusCompare(int x, int y, Class<? extends Agent> type, int r, Comparator<Agent> comparator, Agent baseline)
+    public static ArrayList<Agent> agentsInRadiusCompare(Agent caller, Class<? extends Agent> type, int r, Comparator<Agent> comparator, Agent baseline)
     {
-        ArrayList<Agent> agents = agentsInRadius(x, y, type, r);
+        ArrayList<Agent> agents = agentsInRadius(caller, type, r);
         ArrayList<Agent> matches = new ArrayList<>();
         for(Agent a : agents)
         {
@@ -150,14 +150,16 @@ public class World {
         return matches;
     }
     
-    public static ArrayList<Agent> agentsInRadius(int x, int y, Class<? extends Agent> type, int r){
+    public static ArrayList<Agent> agentsInRadius(Agent caller, Class<? extends Agent> type, int r){
+    	int x = caller.GetPosition().x;
+    	int y = caller.GetPosition().y;
     	ArrayList<Agent> L = new ArrayList<>();
     	Quadtree thisTree = agentTrees.get(type);
     	List<Agent> rectangle = thisTree.query(new Envelope(x-r,x+r,y-r,y+r));
     	for(Agent a:rectangle){
     		//if(Math.abs(x - a.GetPosition().x) <= r && Math.abs(y - a.GetPosition().y) <= r){
-    		if(Point.distance(x, y, a.GetPosition().x, a.GetPosition().y) <= r){
-                    L.add(a);
+    		if(Point.distance(x, y, a.GetPosition().x, a.GetPosition().y) <= r && caller.getID() != a.getID()){
+    			L.add(a);
     		}
     		//}
     	}
