@@ -6,7 +6,6 @@ package agentsimulation.Agents;
 
 import agentsimulation.AgentVariable;
 import agentsimulation.Dispatcher;
-import agentsimulation.World;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.GUIMain;
 import agentsimulation.GUI.States;
@@ -14,6 +13,7 @@ import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
 import agentsimulation.Messages.UpdateGUI;
+import agentsimulation.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NoSuchElementException;

@@ -10,14 +10,13 @@ import agentsimulation.Agents.Patch;
 import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.States;
+import agentsimulation.spacial.Envelope;
+import agentsimulation.spacial.Quadtree;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import agentsimulation.spacial.Quadtree;
-import agentsimulation.spacial.Envelope;
 
 /**
  *
@@ -110,7 +109,7 @@ public class World {
     }
     
     public static List<Agent> agentsInRadius(int x, int y, Class<? extends Agent> type, int r){
-    	List<Agent> L = new ArrayList<Agent>();
+    	List<Agent> L = new ArrayList<>();
     	Quadtree thisTree = agentTrees.get(type);
     	List<Agent> rectangle = thisTree.query(new Envelope(x-r,x+r,y-r,y+r));
     	for(Agent a:rectangle){
@@ -139,7 +138,7 @@ public class World {
     }
     
     public static List<Patch> patchesInRadius(int pX, int pY, int r){
-    	List<Patch> L = new ArrayList<Patch>();
+    	List<Patch> L = new ArrayList<>();
    	
     
     	List<Patch> rets = patchTree.query(new Envelope(pX - r, pX + r, pY - r, pY + r));
