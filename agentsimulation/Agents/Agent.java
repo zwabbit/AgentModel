@@ -57,9 +57,31 @@ public abstract class Agent {
         return false;
     }
     
+    public final boolean AddAttribute(String attribute, int value)
+    {
+        if(AddAttribute(attribute))
+        {
+            attributes.get(attribute).set(value);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
     public final int GetAttribute(String attribute) throws NullPointerException
     {
         return attributes.get(attribute).get();
+    }
+    
+    public final void AddAttributeValue(String attribute, int value)
+    {
+        attributes.get(attribute).addAndGet(value);
+    }
+    
+    public final void SetAttributeValue(String attribute, int value)
+    {
+        attributes.get(attribute).set(value);
     }
     
     public final Point GetPosition()
