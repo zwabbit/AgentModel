@@ -114,9 +114,11 @@ public class World {
     	Quadtree thisTree = agentTrees.get(type);
     	List<Agent> rectangle = thisTree.query(new Envelope(x-r,x+r,y-r,y+r));
     	for(Agent a:rectangle){
-    		if(Math.abs(x - a.GetPosition().x) <= r && Math.abs(y - a.GetPosition().y) <= r){
+    		//if(Math.abs(x - a.GetPosition().x) <= r && Math.abs(y - a.GetPosition().y) <= r){
+    		if(Point.distance(x, y, a.GetPosition().x, a.GetPosition().y) <= r){
     			L.add(a);
     		}
+    		//}
     	}
     	/*
     	for(Patch p:patches){
@@ -142,7 +144,7 @@ public class World {
     
     	List<Patch> rets = patchTree.query(new Envelope(pX - r, pX + r, pY - r, pY + r));
     	for(Patch pat:rets){
-    		if(Math.abs(pX - pat.GetPosition().x) <= r && Math.abs(pY - pat.GetPosition().y) <= r){
+    		if(Point.distance(pX, pY, pat.GetPosition().x, pat.GetPosition().y) <=r){
     			L.add(pat);
     		}
     	}
