@@ -8,7 +8,6 @@ import agentsimulation.Dispatcher;
 import agentsimulation.Messages.*;
 import agentsimulation.World;
 import java.awt.Point;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +36,7 @@ public abstract class Agent {
             idIndex = new AtomicInteger();
         
         agentID = idIndex.getAndIncrement();
-        attributes = new HashMap<>();
+        attributes = new ConcurrentHashMap<>();
     }
     
     protected Agent(int x, int y)
