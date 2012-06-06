@@ -132,16 +132,22 @@ public abstract class Agent {
                 Patch p = World.patchMap.get(position);
                 LeavePatch leave = new LeavePatch(p, this);
                 SendMessage(leave);
-                Killer killer = new Killer(message.sendingAgent, this, true);
-                SendMessage(killer);
+                if(message.sendingAgent != this)
+                {
+                    Killer killer = new Killer(message.sendingAgent, this, true);
+                    SendMessage(killer);
+                }
                 return;
             }
             ExecuteMessage(message);
         }
         else
         {
-            Killer killer = new Killer(message.sendingAgent, this, false);
-            SendMessage(killer);
+            if(message.sendingAgent != this)
+            {
+                Killer killer = new Killer(message.sendingAgent, this, false);
+                SendMessage(killer);
+            }
         }
     }
     
