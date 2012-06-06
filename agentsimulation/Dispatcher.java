@@ -71,6 +71,13 @@ public class Dispatcher implements Runnable {
              * agent queues are empty, decrement the latch and we'll wake up
              * again in this thread.
              */
+            long startTime = 0;
+            long endTime = 0;
+            long runTime = 0;
+            if(World.DEBUG)
+            {
+                startTime = System.currentTimeMillis();
+            }
             while (!currentMessageList.isEmpty() || !currentAgents.isEmpty()) {
                 
                 if(!currentMessageList.isEmpty())
@@ -109,6 +116,12 @@ public class Dispatcher implements Runnable {
                     while (!taskExecutor.isTerminated()) {
                     }
                 }
+            }
+            if(World.DEBUG)
+            {
+                endTime = System.currentTimeMillis();
+                runTime = endTime - startTime;
+                System.err.println("Time spent processing messages and executing agent logic: " + runTime + " milliseconds.");
             }
 
             taskExecutor = Executors.newFixedThreadPool(cpuCount);

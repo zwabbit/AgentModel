@@ -30,6 +30,8 @@ public class World {
     public static int xDim;
     public static int yDim;
     
+    public static boolean DEBUG = false;
+    
     public World(int x, int y)
     {
         if(patchMap == null) patchMap = new HashMap<>();
