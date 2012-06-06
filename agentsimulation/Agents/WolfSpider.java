@@ -7,6 +7,7 @@ package agentsimulation.Agents;
 import agentsimulation.GUI.BoardState;
 import agentsimulation.GUI.States;
 import agentsimulation.Messages.Die;
+import agentsimulation.Messages.Killer;
 import agentsimulation.Messages.Message;
 import agentsimulation.World;
 import java.awt.Point;
@@ -27,26 +28,6 @@ public class WolfSpider extends Agent {
     boolean stalking = false;
     @Override
     protected void Execute() {
-        Patch p = World.patchMap.get(position);
-        Ant ant = (Ant)p.GetOneOf(Ant.class);
-        if(ant != null)
-        {
-            Die die = new Die(ant, this);
-            this.SendMessage(die);
-            hunger = 10;
-        }
-        else
-        {
-            if(hunger == 0)
-            {
-                stalking = true;
-            }
-            else
-            {
-                --hunger;
-            }
-        }
-        
         if(stalking)
         {
             Random nextPoint = new Random();
@@ -67,14 +48,38 @@ public class WolfSpider extends Agent {
             }
             
             this.Move(new Point(nextX,nextY));
-            
+        }
+        
+        Patch p = World.patchMap.get(position);
+        Ant ant = (Ant)p.GetOneOf(Ant.class);
+        if(ant != null)
+        {
+            Die die = new Die(ant, this);
+            this.SendMessage(die);
             stalking = false;
         }
     }
 
     @Override
     protected void ExecuteMessage(Message message) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
+        if(message instanceof Killer)
+        {
+            Killer killer = (Killer)message;
+            if(killer.IsKiller())
+            {
+                hunger = 10;
+                stalking = false;
+            }
+            else
+            {
+                if (hunger == 0) {
+                    stalking = true;
+                } else {
+                    --hunger;
+                }
+            }
+        }
     }
     
 }
