@@ -11,6 +11,7 @@ import agentsimulation.Messages.Killer;
 import agentsimulation.Messages.Message;
 import agentsimulation.World;
 import java.awt.Point;
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -62,7 +63,6 @@ public class WolfSpider extends Agent {
         if(ant != null)
         {
             Die die = new Die(ant, this);
-            System.out.println("kill");
             this.SendMessage(die);
             stalking = false;
         }
