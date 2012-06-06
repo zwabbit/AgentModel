@@ -72,9 +72,7 @@ public class Ant extends Agent{
 						//if no, move to a random (empty?) patch
 		}
 		this.SetAttributeValue("foodCarrying", foodCarrying);
-		if(World.agentsInRadiusLessThanE(this, Ant.class, 3, foodCarrying, "foodCarrying").size() > 0){
-			System.out.println("found");
-		}
+		
 	}
 
 	@Override

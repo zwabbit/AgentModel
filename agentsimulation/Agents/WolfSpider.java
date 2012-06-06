@@ -28,6 +28,10 @@ public class WolfSpider extends Agent {
     boolean stalking = false;
     @Override
     protected void Execute() {
+    	if(hunger<= 0){
+    		hunger = 0;
+    		stalking = true;
+    	}
         if(stalking)
         {
             Random nextPoint = new Random();
@@ -49,15 +53,20 @@ public class WolfSpider extends Agent {
             
             this.Move(new Point(nextX,nextY));
         }
+        else{
+        	--hunger;
+        }
         
         Patch p = World.patchMap.get(position);
         Ant ant = (Ant)p.GetOneOf(Ant.class);
         if(ant != null)
         {
             Die die = new Die(ant, this);
+            System.out.println("kill");
             this.SendMessage(die);
             stalking = false;
         }
+        //--hunger;
     }
 
     @Override

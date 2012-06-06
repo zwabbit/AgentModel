@@ -86,9 +86,14 @@ public class World {
     public void initializeWolfSpiders(int num)
     {
         Random sRandom = new Random();
+        Quadtree spiderTree = new Quadtree();
+    	agentTrees.put(WolfSpider.class, spiderTree);
         for(int index = 0; index < num; index++)
         {
-            WolfSpider spider = new WolfSpider(sRandom.nextInt(xDim), sRandom.nextInt(yDim));
+        	int x = sRandom.nextInt(xDim);
+        	int y = sRandom.nextInt(yDim);
+            WolfSpider spider = new WolfSpider(x, y);
+            spiderTree.insert(new Envelope(x, x+1, y, y+1), spider);
             Dispatcher.agentList.add(spider);
         }
     }

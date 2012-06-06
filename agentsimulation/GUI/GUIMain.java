@@ -11,11 +11,13 @@ import java.util.Scanner;
 
 import javax.swing.JPanel;
 
+import agentsimulation.AgentSimulation;
 import agentsimulation.AgentVariable;
 import agentsimulation.Dispatcher;
 import agentsimulation.World;
 import agentsimulation.Agents.Agent;
 import agentsimulation.Agents.Ant;
+
 import agentsimulation.Agents.Patch;
 import agentsimulation.Messages.UpdateGUI;
 
@@ -29,60 +31,68 @@ public class GUIMain {
 	//private static HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>> variablesMap;
 	private static HashMap<Class<? extends Agent>, Integer> agentsMap;
 	private static GUIPatchInfo patchInfo;
+	private static boolean noGUI;
+	private static boolean textOutput = false;
 	//private static HashMap<Class <? extends Agent>,   
-	
-	public GUIMain(int x, int y){
-		background = new GUIBackground(x, y);
-		controls = new GUIControls();
-		patchInfo = new GUIPatchInfo();
-		//variablesMap = new HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>>();
-		agentsMap = new HashMap<Class<? extends Agent>, Integer>();
-		infoPatch = World.patchMap.get(new Point(0,0));
-		
-		xDim = x;
-		yDim = y;
-		simSpeed = 1;
-		System.out.flush();	
-		
-		drawNext();
-		background.pack();
-		background.setResizable(true);
-		background.setLocationRelativeTo(null);
-		background.setVisible(true);
-		
-		//guiTileDetails TD = new guiTileDetails();
-		//TD.setVisible(true);
-		
-		
-		controls.pack();
-		controls.setResizable(true);
-		
-		controls.setLocation(new Point(background.getLocationOnScreen().x + background.getSize().width, background.getLocationOnScreen().y));
-		controls.setVisible(true);
-		
-		patchInfo.pack();
-		patchInfo.setResizable(true);
-		patchInfo.setLocation(new Point(background.getLocationOnScreen().x - patchInfo.getSize().width, background.getLocationOnScreen().y));
-		patchInfo.setVisible(true);
+
+	public GUIMain(int x, int y, boolean ng){
+		noGUI = ng;
+		if(noGUI){
+			AgentSimulation.startSim();
+		}
+		else{
+			background = new GUIBackground(x, y);
+			controls = new GUIControls();
+			patchInfo = new GUIPatchInfo();
+			//variablesMap = new HashMap<Class<? extends Agent>, HashMap<Integer, HashMap<String, Object>>>();
+			agentsMap = new HashMap<Class<? extends Agent>, Integer>();
+			infoPatch = World.patchMap.get(new Point(0,0));
+
+			xDim = x;
+			yDim = y;
+			simSpeed = 1;
+			System.out.flush();	
+
+			drawNext();
+			background.pack();
+			background.setResizable(true);
+			background.setLocationRelativeTo(null);
+			background.setVisible(true);
+
+			//guiTileDetails TD = new guiTileDetails();
+			//TD.setVisible(true);
+
+
+			controls.pack();
+			controls.setResizable(true);
+
+			controls.setLocation(new Point(background.getLocationOnScreen().x + background.getSize().width, background.getLocationOnScreen().y));
+			controls.setVisible(true);
+
+			patchInfo.pack();
+			patchInfo.setResizable(true);
+			patchInfo.setLocation(new Point(background.getLocationOnScreen().x - patchInfo.getSize().width, background.getLocationOnScreen().y));
+			patchInfo.setVisible(true);
+		}
 	}
-	
+
 	public static void updateBoardState(Class<? extends Agent> c, HashMap<String, Object> vars){
-		
+
 		Point loc = (Point) vars.get("location");
 		int id = (int) vars.get("id");
 		States curr = BoardState.getState(loc.x, loc.y);
-		
-		
+
+
 		if (c == Patch.class){
 			//if(curr == States.NULL){
 
-				if((int)vars.get("food") > 0){
-					
-					BoardState.setState(loc.x, loc.y, States.FOOD);
-				}
-				else{
-					BoardState.setState(loc.x, loc.y, States.EMPTY);
-				}
+			if((int)vars.get("food") > 0){
+
+				BoardState.setState(loc.x, loc.y, States.FOOD);
+			}
+			else{
+				BoardState.setState(loc.x, loc.y, States.EMPTY);
+			}
 			//}
 		}
 		else if (c == Ant.class) {
@@ -92,67 +102,76 @@ public class GUIMain {
 		else{
 			BoardState.setState(loc.x, loc.y, States.OTHER);
 		}
-		
+
 		//if(variablesMap.get(c) == null){
 		//	variablesMap.put(c, new HashMap<Integer, HashMap<String, Object>>());
 		//}
 		//variablesMap.get(c).put(id, vars);
-		
+
 	}
-	
+
 	public static void setSimSpeed(int s){
 		simSpeed = s;
 	}
-	
+
 	public static void drawNext(){
-	if (infoPatch != null){
-		//System.out.println(infoPatch);
-		Dispatcher.SendMessage(new UpdateGUI(infoPatch, null));
-	}
-		for(int i = 0;i<yDim;i++){
-			for(int j=0;j<xDim;j++){
-				//JPanel square = null;
-				JPanel square = (JPanel)background.gameBoard.getComponent(i*yDim + j);
-				//System.out.println(square + " ");
-				switch(BoardState.getState(j, i)){
+		if(noGUI){
+			if(textOutput){
+				
+				BoardState.printBoard();
+			}
+		}
+		else{
+			if (infoPatch != null){
+				//System.out.println(infoPatch);
+				Dispatcher.SendMessage(new UpdateGUI(infoPatch, null));
+			}
+			for(int i = 0;i<yDim;i++){
+				for(int j=0;j<xDim;j++){
+					//JPanel square = null;
+					JPanel square = (JPanel)background.gameBoard.getComponent(i*yDim + j);
+					//System.out.println(square + " ");
+					switch(BoardState.getState(j, i)){
 					case FOOD:
 						square.setBackground(Color.GREEN);
-					break;
-					
+						break;
+
 					case SPIDER:
-						square.setBackground(Color.YELLOW);
-					break;
-					
+						square.setBackground(Color.yellow);
+						break;
+
 					case ANT:
-						square.setBackground(Color.RED);
-					break;
-					
+						square.setBackground(Color.red);
+						break;
+
 					case EMPTY:
 						square.setBackground(Color.gray);
-					break;
-					
+						break;
+
 					case NULL:
 						square.setBackground(Color.black);
-					break;
-					
+						break;
+
 					case OTHER:
 						square.setBackground(Color.ORANGE);
-					break;
+						break;
 					default:
 						square.setBackground(Color.blue);
-					break;
+						break;
+					}
+
+					//System.out.println(background.getComponentAt(j, i) + "\t");
+					//System.out.print(BoardState.getState(j, i) +"\t");
 				}
-				
-				//System.out.println(background.getComponentAt(j, i) + "\t");
-				//System.out.print(BoardState.getState(j, i) +"\t");
+				//System.out.println();
 			}
-			//System.out.println();
+		
+			waitMillis(simSpeed * 20);
 		}
-		waitMillis(simSpeed * 20);
 		//clearAgents();
 		//System.out.println();
 	}
-	
+
 	public static void clearAgents(){
 		for(int i = 0;i<yDim;i++){
 			for(int j=0;j<xDim;j++){
@@ -196,11 +215,11 @@ public class GUIMain {
 		Point target = new Point(source.getLocation().x / (500 / xDim), source.getLocation().y / (500 / yDim));
 		infoPatch = World.patchMap.get(target);
 	}
-	
+
 	public static void waitMillis(int n){
 		long t0, t1;
 		t0 = System.currentTimeMillis();
-		
+
 		do{
 			t1 = System.currentTimeMillis();
 		}

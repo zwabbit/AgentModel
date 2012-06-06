@@ -129,7 +129,7 @@ public class Dispatcher implements Runnable {
             for(int index = 0; index < cpuCount; index++) {
                 taskExecutor.execute(new PatchExecutionThread(patchList));
             }
-            GUIPatchInfo.updateAgentInfo(World.agentsInRadius(World.patchMap.get(new Point(50,50)), Ant.class, 3).toString());
+           // GUIPatchInfo.updateAgentInfo(World.agentsInRadius(World.patchMap.get(new Point(50,50)), Ant.class, 3).toString());
 
             taskExecutor.shutdown();
             while (!taskExecutor.isTerminated()) {}

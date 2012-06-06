@@ -20,13 +20,13 @@ public class AgentSimulation {
         // TODO code application logic here
     	//start world
     	//start dispatcher
-    	int x = 100, y = 100;
+    	int x = 20, y = 20;
     	new BoardState(x,y);
     	World world = new World(x, y);
     	t = new Thread(new Dispatcher(World.patchMap));
-    	world.initializeAnts(8);
-    	world.initializeWolfSpiders(0);
-    	new GUIMain(x, y);   	
+    	world.initializeAnts(5);
+    	world.initializeWolfSpiders(1);
+    	new GUIMain(x, y, false);   	
     }
     
     public static void startSim(){
