@@ -5,23 +5,20 @@
 package agentsimulation;
 
 import agentsimulation.Agents.Agent;
-import agentsimulation.Agents.Ant;
 import agentsimulation.Agents.Patch;
-import agentsimulation.Agents.WolfSpider;
 import agentsimulation.GUI.GUIMain;
-import agentsimulation.GUI.GUIPatchInfo;
 import agentsimulation.Messages.EnterPatch;
 import agentsimulation.Messages.LeavePatch;
 import agentsimulation.Messages.Message;
 import agentsimulation.Spatial.Envelope;
-
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,15 +26,19 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Dispatcher implements Runnable {
     
-    public static LinkedBlockingQueue<Agent> agentList;
-    private static LinkedBlockingQueue<Message> messageList;
-    private static LinkedBlockingQueue<Message> currentMessageList;
+    public static LinkedBlockingQueue<Agent> agentList = null;
+    private static LinkedBlockingQueue<Message> messageList = null;
+    private static LinkedBlockingQueue<Message> currentMessageList = null;
+    private final LinkedBlockingQueue<LinkedBlockingQueue<Message>> sortedMessages;
     private static Queue<Message> finalOperations;
+    LinkedBlockingQueue<Agent> currentAgents;
     
     private HashMap<Point, Patch> patches;
-    
-    ExecutorService taskExecutor;
+
     int cpuCount;
+    
+    CyclicBarrier startSignal;
+    CyclicBarrier doneSignal;
     
     public Dispatcher(HashMap<Point, Patch> patchMap)
     {
@@ -45,13 +46,21 @@ public class Dispatcher implements Runnable {
         if(agentList == null) agentList = new LinkedBlockingQueue<>();
         if(messageList == null) messageList = new LinkedBlockingQueue<>();
         if(currentMessageList == null) currentMessageList = new LinkedBlockingQueue<>();
-        if(finalOperations == null) finalOperations = new LinkedBlockingQueue<Message>();
+        sortedMessages = new LinkedBlockingQueue<>();
+        if(finalOperations == null) finalOperations = new LinkedBlockingQueue<>();
+        currentAgents = new LinkedBlockingQueue<>();
+        startSignal = new CyclicBarrier(cpuCount + 1);
+        doneSignal = new CyclicBarrier(cpuCount + 1);
         
         this.patches = patchMap;
     }
 
     @Override
     public void run() {
+        for (int index = 0; index < cpuCount; index++) {
+            Thread t = new Thread(new ExecutionThread(currentAgents, sortedMessages, startSignal, doneSignal));
+            t.start();
+        }
         HashMap<Integer, LinkedBlockingQueue<Message>> agentMessages;
         while (true) {
         	
@@ -60,7 +69,7 @@ public class Dispatcher implements Runnable {
             currentMessageList.addAll(messageList);
             messageList.clear();
             
-            LinkedBlockingQueue<Agent> currentAgents = new LinkedBlockingQueue<>(agentList);
+            currentAgents.addAll(agentList);
             agentList.clear();
             
 
@@ -92,31 +101,23 @@ public class Dispatcher implements Runnable {
                     }
 
                     currentMessageList.clear();
-
-                    LinkedBlockingQueue<LinkedBlockingQueue<Message>> messages = new LinkedBlockingQueue<>(agentMessages.values());
-                    
-                    taskExecutor = Executors.newFixedThreadPool(cpuCount);
-                    for (int index = 0; index < cpuCount; index++) {
-                        taskExecutor.execute(new ExecutionThread(null, messages));
-                    }
-
-                    taskExecutor.shutdown();
-                    while (!taskExecutor.isTerminated()) {
-                    }
                 }
-                
-                if(!currentAgents.isEmpty())
-                {
-                    taskExecutor = Executors.newFixedThreadPool(cpuCount);
-                    for (int index = 0; index < cpuCount; index++) {
-                        taskExecutor.execute(new ExecutionThread(currentAgents, null));
-                    }
-                    
-                    taskExecutor.shutdown();
-                    while (!taskExecutor.isTerminated()) {
-                    }
+                try {
+                    startSignal.await();
+                    doneSignal.await();
+                } catch (InterruptedException | BrokenBarrierException ex) {
+                    Logger.getLogger(Dispatcher.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
+            currentAgents.addAll(patches.values());
+            try {
+                startSignal.await();
+                doneSignal.await();
+            } catch (InterruptedException | BrokenBarrierException ex) {
+                Logger.getLogger(Dispatcher.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             if(World.DEBUG)
             {
                 endTime = System.currentTimeMillis();
@@ -124,15 +125,6 @@ public class Dispatcher implements Runnable {
                 System.err.println("Time spent processing messages and executing agent logic: " + runTime + " milliseconds.");
             }
 
-            taskExecutor = Executors.newFixedThreadPool(cpuCount);
-            LinkedBlockingQueue<Patch> patchList = new LinkedBlockingQueue<>(patches.values());
-            for(int index = 0; index < cpuCount; index++) {
-                taskExecutor.execute(new PatchExecutionThread(patchList));
-            }
-           // GUIPatchInfo.updateAgentInfo(World.agentsInRadius(World.patchMap.get(new Point(50,50)), Ant.class, 3).toString());
-
-            taskExecutor.shutdown();
-            while (!taskExecutor.isTerminated()) {}
             executeFinals();
             GUIMain.drawNext();
         }
