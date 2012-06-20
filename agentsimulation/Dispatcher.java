@@ -42,7 +42,8 @@ public class Dispatcher implements Runnable {
     
     public Dispatcher(HashMap<Point, Patch> patchMap)
     {
-        cpuCount = Runtime.getRuntime().availableProcessors();
+        //cpuCount = Runtime.getRuntime().availableProcessors();
+        cpuCount = 1;
         if(agentList == null) agentList = new LinkedBlockingQueue<>();
         if(messageList == null) messageList = new LinkedBlockingQueue<>();
         if(currentMessageList == null) currentMessageList = new LinkedBlockingQueue<>();
@@ -101,10 +102,14 @@ public class Dispatcher implements Runnable {
                     }
 
                     currentMessageList.clear();
+                    sortedMessages.addAll(agentMessages.values());
                 }
                 try {
+                    long aTime = System.nanoTime();
                     startSignal.await();
                     doneSignal.await();
+                    long eTime = System.nanoTime();
+                    System.err.println("Time it took to process agents for iteration " + World.iteration + ": " + (eTime - aTime));
                 } catch (InterruptedException | BrokenBarrierException ex) {
                     Logger.getLogger(Dispatcher.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -112,8 +117,10 @@ public class Dispatcher implements Runnable {
             
             currentAgents.addAll(patches.values());
             try {
+                long aTime = System.nanoTime();
                 startSignal.await();
                 doneSignal.await();
+                long eTime = System.nanoTime();
             } catch (InterruptedException | BrokenBarrierException ex) {
                 Logger.getLogger(Dispatcher.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -124,6 +131,8 @@ public class Dispatcher implements Runnable {
                 runTime = endTime - startTime;
                 System.err.println("Time spent processing messages and executing agent logic: " + runTime + " milliseconds.");
             }
+            
+            ++World.iteration;
 
             executeFinals();
             GUIMain.drawNext();

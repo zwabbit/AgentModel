@@ -32,6 +32,8 @@ public class World {
     
     public static boolean DEBUG = false;
     
+    public static long iteration = 0;
+    
     public World(int x, int y)
     {
         if(patchMap == null) patchMap = new HashMap<>();
