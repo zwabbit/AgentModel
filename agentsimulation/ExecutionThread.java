@@ -41,24 +41,40 @@ public class ExecutionThread implements Runnable {
                 if (messageQueue != null) {
                     while(true)
                     {
+                        long mStart = System.nanoTime();
                         messages = messageQueue.poll();
+                        long mG = System.nanoTime();
                         if (messages == null) {
                             break;
                         }
                         for (Message message : messages) {
                             message.receivingAgent.SetNextMessage(message);
                         }
+                        long mE = System.nanoTime();
+                        /*System.out.println("Time to get message: " + (mG - mStart) +
+                                "\nTime to process messages: " + (mE - mG) +
+                                " for thread " + Thread.currentThread().getId());
+                                */
                     }
                 }
 
                 while(true)
                 {
                     if (agentQueue != null) {
+                        long aStart = System.nanoTime();
                         Agent agent = agentQueue.poll();
+                        long aGot = System.nanoTime();
                         if (agent == null) {
                             break;
                         }
                         agent.SetNext();
+                        long aEnd = System.nanoTime();
+                        
+                        /*System.out.println("Time to get agent: " + (aGot - aStart) +
+                                "\nTime to process: " + (aEnd - aGot) +
+                                "\nfor thread: " + Thread.currentThread().getId());
+                                 
+                                */
                     }
                 }
                 

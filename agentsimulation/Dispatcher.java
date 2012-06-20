@@ -43,7 +43,7 @@ public class Dispatcher implements Runnable {
     public Dispatcher(HashMap<Point, Patch> patchMap)
     {
         //cpuCount = Runtime.getRuntime().availableProcessors();
-        cpuCount = 1;
+        cpuCount = 2;
         if(agentList == null) agentList = new LinkedBlockingQueue<>();
         if(messageList == null) messageList = new LinkedBlockingQueue<>();
         if(currentMessageList == null) currentMessageList = new LinkedBlockingQueue<>();
@@ -73,7 +73,7 @@ public class Dispatcher implements Runnable {
             currentAgents.addAll(agentList);
             agentList.clear();
             
-
+            long itrStart = System.nanoTime();
             /*
              * All this splitting of work could be done much more efficiently
              * with a countdown latch. Specifically, create a latch equal to
@@ -102,7 +102,10 @@ public class Dispatcher implements Runnable {
                     }
 
                     currentMessageList.clear();
+                    long mS = System.nanoTime();
                     sortedMessages.addAll(agentMessages.values());
+                    long mE = System.nanoTime();
+                    System.out.println("Cost of adding messages to queue for iteration " + World.iteration + ": " + (mE - mS));
                 }
                 try {
                     long aTime = System.nanoTime();
@@ -131,6 +134,9 @@ public class Dispatcher implements Runnable {
                 runTime = endTime - startTime;
                 System.err.println("Time spent processing messages and executing agent logic: " + runTime + " milliseconds.");
             }
+            long itrEnd = System.nanoTime();
+            
+            System.err.println("Total iteration time for iteration" + World.iteration + ": " + (itrEnd - itrStart));
             
             ++World.iteration;
 
